@@ -14,7 +14,7 @@ public class MatchStats {
     private String matchId;
     private int playerId;
     private int teamId;
-    private String loc;
+    private String location;
     private int kicks;
     private int marks;
     private int handballs;
