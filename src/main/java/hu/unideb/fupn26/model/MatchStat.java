@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 @Getter
 @EqualsAndHashCode
-public class MatchStats {
+public class MatchStat {
 
     private String matchId;
     private int playerId;
@@ -38,5 +38,4 @@ public class MatchStats {
     private int bounces;
     private int goalAssist;
     private float percentageOfGamePlayed;
-
 }
