@@ -11,9 +11,11 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class MatchStat {
 
-    private String matchId;
-    private int playerId;
-    private int teamId;
+    private String playerName;
+    private String playerTeam;
+    private String opponentTeam;
+    private int season;
+    private String round;
     private String location;
     private int kicks;
     private int marks;
