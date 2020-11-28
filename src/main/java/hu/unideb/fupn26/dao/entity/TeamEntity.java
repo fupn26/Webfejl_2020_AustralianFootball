@@ -20,5 +20,4 @@ public class TeamEntity {
 
     @Column(name = "tname")
     private String name;
-
 }
