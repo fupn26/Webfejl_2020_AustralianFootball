@@ -1,4 +1,4 @@
-package hu.unideb.fupn26.dao;
+package hu.unideb.fupn26.dao.repository;
 
 import hu.unideb.fupn26.dao.entity.PlayerEntity;
 import org.springframework.data.repository.CrudRepository;

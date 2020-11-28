@@ -1,4 +1,4 @@
-package hu.unideb.fupn26.dao;
+package hu.unideb.fupn26.dao.repository;
 
 import hu.unideb.fupn26.dao.entity.MatchStatEntity;
 import hu.unideb.fupn26.dao.entity.MatchStatId;

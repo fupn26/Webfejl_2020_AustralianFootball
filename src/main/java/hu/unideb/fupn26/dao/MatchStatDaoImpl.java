@@ -1,6 +1,6 @@
 package hu.unideb.fupn26.dao;
 
-import hu.unideb.fupn26.dao.entity.MatchStatEntity;
+import hu.unideb.fupn26.dao.repository.MatchStatRepository;
 import hu.unideb.fupn26.model.MatchStat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
