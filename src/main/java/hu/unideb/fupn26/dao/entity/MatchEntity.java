@@ -22,11 +22,11 @@ public class MatchEntity {
     private String round;
 
     @ManyToOne
-    @JoinColumn(name = "tid")
+    @JoinColumn(name = "tid1")
     private TeamEntity team1;
 
     @ManyToOne
-    @JoinColumn(name = "tid")
+    @JoinColumn(name = "tid2")
     private TeamEntity team2;
 
     @Column(name = "tid1_loc")
