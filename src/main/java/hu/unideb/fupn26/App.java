@@ -1,5 +1,8 @@
 package hu.unideb.fupn26;
 
+import hu.unideb.fupn26.dao.MatchDao;
+import hu.unideb.fupn26.model.Match;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -20,8 +23,11 @@ import org.springframework.context.ApplicationContext;
  */
 @Slf4j
 @SpringBootApplication
+@RequiredArgsConstructor
 public class App implements CommandLineRunner
 {
+    private final MatchDao matchDao;
+
     @Autowired
     ApplicationContext context;
 
@@ -33,5 +39,26 @@ public class App implements CommandLineRunner
     @Override
     public void run(String... args) throws Exception {
         System.out.println("Hello World!");
+
+        Match match = Match.builder()
+                .season(2020)
+                .round("EF")
+                .team1("Adelaide")
+                .team2("Carlton")
+                .winnerTeam("Carlton")
+                .loserTeam("Adelaide")
+                .homeTeam("Adelaide")
+                .awayTeam("Carlton")
+                .build();
+
+        try {
+            matchDao.createMatch(match);
+            matchDao.deleteMatch(match);
+            matchDao.readAll().stream()
+                    .forEach(System.out::println);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
