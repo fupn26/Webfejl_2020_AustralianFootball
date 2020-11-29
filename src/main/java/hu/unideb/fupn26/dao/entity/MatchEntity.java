@@ -41,100 +41,100 @@ public class MatchEntity {
     private String venue;
 
     @Column(name = "att")
-    private int attendants;
+    private Integer attendants;
 
-    private int margin;
+    private Integer margin;
 
     @Column(name = "win_score")
-    private int winnerScore;
+    private Integer winnerScore;
 
     @Column(name = "win_tid")
-    private int winnerTeam;
+    private Integer winnerTeam;
 
     @Column(name = "win_loc")
     private String winnerLocation;
 
     @Column(name = "lose_score")
-    private int loserScore;
+    private Integer loserScore;
 
     @Column(name = "lose_tid")
-    private int loserTeam;
+    private Integer loserTeam;
 
     @Column(name = "lose_loc")
-    private int loserLocation;
+    private String loserLocation;
 
     @Column(name = "h_tid")
-    private int homeTeam;
+    private Integer homeTeam;
 
     @Column(name = "h_score")
-    private int homeScore;
+    private Integer homeScore;
 
     @Column(name = "h_q1g")
-    private int homeQ1Goals;
+    private Integer homeQ1Goals;
 
     @Column(name = "h_q2g")
-    private int homeQ2Goals;
+    private Integer homeQ2Goals;
 
     @Column(name = "h_q3g")
-    private int homeQ3Goals;
+    private Integer homeQ3Goals;
 
     @Column(name = "h_q4g")
-    private int homeQ4Goals;
+    private Integer homeQ4Goals;
 
     @Column(name = "h_etg")
-    private int homeExtraTimeGoals;
+    private Integer homeExtraTimeGoals;
 
     @Column(name = "h_q1b")
-    private int homeQ1Behinds;
+    private Integer homeQ1Behinds;
 
     @Column(name = "h_q2b")
-    private int homeQ2Behinds;
+    private Integer homeQ2Behinds;
 
     @Column(name = "h_q3b")
-    private int homeQ3Behinds;
+    private Integer homeQ3Behinds;
 
     @Column(name = "h_q4b")
-    private int homeQ4Behinds;
+    private Integer homeQ4Behinds;
 
     @Column(name = "h_etb")
-    private int homeExtraTimeBehinds;
+    private Integer homeExtraTimeBehinds;
 
     @Column(name = "a_tid")
-    private int awayTeam;
+    private Integer awayTeam;
 
     @Column(name = "a_score")
-    private int awayScore;
+    private Integer awayScore;
 
     @Column(name = "a_q1g")
-    private int awayQ1Goals;
+    private Integer awayQ1Goals;
 
     @Column(name = "a_q2g")
-    private int awayQ2Goals;
+    private Integer awayQ2Goals;
 
     @Column(name = "a_q3g")
-    private int awayQ3Goals;
+    private Integer awayQ3Goals;
 
     @Column(name = "a_q4g")
-    private int awayQ4Goals;
+    private Integer awayQ4Goals;
 
     @Column(name = "a_etg")
-    private int awayExtraTimeGoals;
+    private Integer awayExtraTimeGoals;
 
     @Column(name = "a_q1b")
-    private int awayQ1Behinds;
+    private Integer awayQ1Behinds;
 
     @Column(name = "a_q2b")
-    private int awayQ2Behinds;
+    private Integer awayQ2Behinds;
 
     @Column(name = "a_q3b")
-    private int awayQ3Behinds;
+    private Integer awayQ3Behinds;
 
     @Column(name = "a_q4b")
-    private int awayQ4Behinds;
+    private Integer awayQ4Behinds;
 
     @Column(name = "a_etb")
-    private int awayExtraTimeBehinds;
+    private Integer awayExtraTimeBehinds;
 
     @Column(name = "target")
-    private int target;
+    private Integer target;
 }

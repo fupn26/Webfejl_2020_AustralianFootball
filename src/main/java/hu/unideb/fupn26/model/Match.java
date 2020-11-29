@@ -1,20 +1,18 @@
 package hu.unideb.fupn26.model;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.Column;
 import java.sql.Timestamp;
 
 @AllArgsConstructor
+@Builder
 @ToString
 @Getter
 @EqualsAndHashCode
 public class Match {
 
-    private int season;
+    private Integer season;
     private String round;
     private String team1;
     private String team2;
@@ -22,36 +20,36 @@ public class Match {
     private String team2Location;
     private Timestamp startDate;
     private String venue;
-    private int attendants;
-    private int margin;
+    private Integer attendants;
+    private Integer margin;
     private String winnerTeam;
-    private int winnerScore;
+    private Integer winnerScore;
     private String winnerLocation;
     private String loserTeam;
-    private int loserScore;
+    private Integer loserScore;
     private String loserLocation;
     private String homeTeam;
-    private int homeScore;
-    private int homeQ1Goals;
-    private int homeQ2Goals;
-    private int homeQ3Goals;
-    private int homeQ4Goals;
-    private int homeExtraTimeGoals;
-    private int homeQ1Behinds;
-    private int homeQ2Behinds;
-    private int homeQ3Behinds;
-    private int homeQ4Behinds;
-    private int homeExtraTimeBehinds;
-    private int awayTeam;
-    private int awayScore;
-    private int awayQ1Goals;
-    private int awayQ2Goals;
-    private int awayQ3Goals;
-    private int awayQ4Goals;
-    private int awayExtraTimeGoals;
-    private int awayQ1Behinds;
-    private int awayQ2Behinds;
-    private int awayQ3Behinds;
-    private int awayQ4Behinds;
-    private int awayExtraTimeBehinds;
+    private Integer homeScore;
+    private Integer homeQ1Goals;
+    private Integer homeQ2Goals;
+    private Integer homeQ3Goals;
+    private Integer homeQ4Goals;
+    private Integer homeExtraTimeGoals;
+    private Integer homeQ1Behinds;
+    private Integer homeQ2Behinds;
+    private Integer homeQ3Behinds;
+    private Integer homeQ4Behinds;
+    private Integer homeExtraTimeBehinds;
+    private String awayTeam;
+    private Integer awayScore;
+    private Integer awayQ1Goals;
+    private Integer awayQ2Goals;
+    private Integer awayQ3Goals;
+    private Integer awayQ4Goals;
+    private Integer awayExtraTimeGoals;
+    private Integer awayQ1Behinds;
+    private Integer awayQ2Behinds;
+    private Integer awayQ3Behinds;
+    private Integer awayQ4Behinds;
+    private Integer awayExtraTimeBehinds;
 }
