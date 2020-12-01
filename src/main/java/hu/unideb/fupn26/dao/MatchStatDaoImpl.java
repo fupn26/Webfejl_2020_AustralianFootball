@@ -6,6 +6,7 @@ import hu.unideb.fupn26.dao.repository.MatchStatRepository;
 import hu.unideb.fupn26.dao.repository.PlayerRepository;
 import hu.unideb.fupn26.dao.repository.TeamRepository;
 import hu.unideb.fupn26.exception.UnknownMatchException;
+import hu.unideb.fupn26.exception.UnknownPlayerException;
 import hu.unideb.fupn26.exception.UnknownTeamException;
 import hu.unideb.fupn26.model.MatchStat;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +29,24 @@ public class MatchStatDaoImpl implements MatchStatDao{
     private final PlayerRepository playerRepository;
 
     @Override
-    public void createMatchStat(MatchStat matchStat) throws UnknownMatchException {
+    public void createMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException {
         MatchStatEntity matchStatEntity;
         MatchEntity matchEntity = queryMatchByMatchStat(matchStat);
+        PlayerEntity playerEntity = queryPlayerByName(matchStat.getPlayerFirstName()
+                ,matchStat.getPlayerLastName());
     }
 
-    private PlayerEntity queryPlayerByName(String name) {
-        return null;
+    private PlayerEntity queryPlayerByName(String firstName, String lastname) throws UnknownPlayerException {
+        Optional<PlayerEntity> playerEntity = playerRepository.findByFirstNameAndLastName(firstName, lastname).stream()
+                .findFirst();
+
+        if (playerEntity.isEmpty()) {
+            log.error("Player not found: {} {}", firstName, lastname);
+            throw new UnknownPlayerException(String.format("Player not found: %s %s", firstName, lastname));
+        }
+
+        log.trace("Player Entity: {}", playerEntity);
+        return playerEntity.get();
     }
 
     private MatchEntity queryMatchByMatchStat(MatchStat matchStat) throws UnknownMatchException {
@@ -80,7 +92,7 @@ public class MatchStatDaoImpl implements MatchStatDao{
                 })
                 .findFirst();
 
-        if (!matchEntity.isPresent()) {
+        if (matchEntity.isEmpty()) {
             log.error("Match not found");
             throw new UnknownMatchException("Match not found");
         }
@@ -91,7 +103,7 @@ public class MatchStatDaoImpl implements MatchStatDao{
     private int queryTeamIdByName(String team) throws UnknownTeamException {
         Optional<TeamEntity> teamEntity = teamRepository.findByName(team);
 
-        if (!teamEntity.isPresent()) {
+        if (teamEntity.isEmpty()) {
             throw new UnknownTeamException(String.format("Team not found: %s", team));
         } else {
             log.trace("Team Entity: {}", teamEntity);
