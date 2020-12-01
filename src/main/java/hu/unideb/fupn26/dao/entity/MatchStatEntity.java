@@ -26,71 +26,71 @@ public class MatchStatEntity {
     private String location;
 
     @Column(name = "ki")
-    private int kicks;
+    private Integer kicks;
 
     @Column(name = "mk")
-    private int marks;
+    private Integer marks;
 
     @Column(name = "hb")
-    private int handballs;
+    private Integer handballs;
 
     @Column(name = "di")
-    private int disposals;
+    private Integer disposals;
 
     @Column(name = "gl")
-    private int goals;
+    private Integer goals;
 
     @Column(name = "bh")
-    private int behinds;
+    private Integer behinds;
 
     @Column(name = "ho")
-    private int hitOuts;
+    private Integer hitOuts;
 
     @Column(name = "tk")
-    private int tackles;
+    private Integer tackles;
 
     @Column(name = "rb")
-    private int rebound50s;
+    private Integer rebound50s;
 
     @Column(name = "if")
-    private int inside50s;
+    private Integer inside50s;
 
     @Column(name = "cl")
-    private int clearances;
+    private Integer clearances;
 
     @Column(name = "cg")
-    private int clangers;
+    private Integer clangers;
 
     @Column(name = "ff")
-    private int freeKicksFor;
+    private Integer freeKicksFor;
 
     @Column(name = "fa")
-    private int freeKicksAgainst;
+    private Integer freeKicksAgainst;
 
     @Column(name = "br")
-    private int brownlowVotes;
+    private Integer brownlowVotes;
 
     @Column(name = "cp")
-    private int contestedPossessions;
+    private Integer contestedPossessions;
 
     @Column(name = "up")
-    private int uncontestedPossessions;
+    private Integer uncontestedPossessions;
 
     @Column(name = "cm")
-    private int contestedMarks;
+    private Integer contestedMarks;
 
     @Column(name = "mi")
-    private int marksInside50;
+    private Integer marksInside50;
 
     @Column(name = "1p")
-    private float onePercenters;
+    private Float onePercenters;
 
     @Column(name = "bo")
-    private int bounces;
+    private Integer bounces;
 
     @Column(name = "ga")
-    private int goalAssist;
+    private Integer goalAssist;
 
     @Column(name = "pp")
-    private float percentageOfGamePlayed;
+    private Float percentageOfGamePlayed;
 }
