@@ -199,7 +199,12 @@ public class MatchStatDaoImpl implements MatchStatDao{
     }
 
     @Override
-    public void deleteMatchStat(MatchStat matchStat) {
+    public void deleteMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException {
+        MatchEntity matchEntity = queryMatchByMatchStat(matchStat);
+        PlayerEntity playerEntity = queryPlayerByName(matchStat.getPlayerFirstName()
+                ,matchStat.getPlayerLastName());
+        MatchStatId matchStatId = new MatchStatId(matchEntity, playerEntity);
 
+        matchStatRepository.deleteById(matchStatId);
     }
 }

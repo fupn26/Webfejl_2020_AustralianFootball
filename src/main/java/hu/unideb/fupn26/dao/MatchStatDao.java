@@ -11,5 +11,5 @@ public interface MatchStatDao {
 
     void createMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException, UnknownTeamException;
     Collection<MatchStat> readAll();
-    void deleteMatchStat(MatchStat matchStat);
+    void deleteMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException;
 }
