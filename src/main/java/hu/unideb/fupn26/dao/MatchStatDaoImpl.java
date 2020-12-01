@@ -14,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -29,11 +27,48 @@ public class MatchStatDaoImpl implements MatchStatDao{
     private final PlayerRepository playerRepository;
 
     @Override
-    public void createMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException {
+    public void createMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException, UnknownTeamException {
         MatchStatEntity matchStatEntity;
         MatchEntity matchEntity = queryMatchByMatchStat(matchStat);
         PlayerEntity playerEntity = queryPlayerByName(matchStat.getPlayerFirstName()
                 ,matchStat.getPlayerLastName());
+        TeamEntity playerTeamEntity = queryTeamByName(matchStat.getPlayerTeam());
+        MatchStatId matchStatId = new MatchStatId(matchEntity, playerEntity);
+
+        matchStatEntity = MatchStatEntity.builder()
+                .id(matchStatId)
+                .team(playerTeamEntity)
+                .location(matchStat.getLocation())
+                .kicks(matchStat.getKicks())
+                .marks(matchStat.getMarks())
+                .handballs(matchStat.getHandballs())
+                .disposals(matchStat.getDisposals())
+                .goals(matchStat.getGoals())
+                .behinds(matchStat.getBehinds())
+                .hitOuts(matchStat.getHitOuts())
+                .tackles(matchStat.getTackles())
+                .rebound50s(matchStat.getRebound50s())
+                .inside50s(matchStat.getInside50s())
+                .clearances(matchStat.getClearances())
+                .clangers(matchStat.getClangers())
+                .freeKicksFor(matchStat.getFreeKicksFor())
+                .freeKicksAgainst(matchStat.getFreeKicksAgainst())
+                .brownlowVotes(matchStat.getBrownlowVotes())
+                .contestedPossessions(matchStat.getContestedPossessions())
+                .uncontestedPossessions(matchStat.getUncontestedPossessions())
+                .contestedMarks(matchStat.getContestedMarks())
+                .marksInside50(matchStat.getMarksInside50())
+                .onePercenters(matchStat.getOnePercenters())
+                .bounces(matchStat.getBounces())
+                .goalAssist(matchStat.getGoalAssist())
+                .percentageOfGamePlayed(matchStat.getPercentageOfGamePlayed())
+                .build();
+
+        try {
+            matchStatRepository.save(matchStatEntity);
+        } catch (Exception e) {
+            log.error("Can't save new match stat: {}", e.getMessage());
+        }
     }
 
     private PlayerEntity queryPlayerByName(String firstName, String lastname) throws UnknownPlayerException {
@@ -56,8 +91,8 @@ public class MatchStatDaoImpl implements MatchStatDao{
         String opponentTeamVsPlayerTeamMatch;
 
         try {
-            playerTeamId = queryTeamIdByName(matchStat.getPlayerTeam());
-            opponentTeamId = queryTeamIdByName(matchStat.getOpponentTeam());
+            playerTeamId = queryTeamByName(matchStat.getPlayerTeam()).getId();
+            opponentTeamId = queryTeamByName(matchStat.getOpponentTeam()).getId();
         } catch (UnknownTeamException e) {
             log.error("Team not found!");
             throw new UnknownMatchException(String.format("Match not found: %s", e.getMessage()));
@@ -97,18 +132,19 @@ public class MatchStatDaoImpl implements MatchStatDao{
             throw new UnknownMatchException("Match not found");
         }
 
+        log.trace("Match Entity: {}", matchEntity);
         return matchEntity.get();
     }
 
-    private int queryTeamIdByName(String team) throws UnknownTeamException {
+    private TeamEntity queryTeamByName(String team) throws UnknownTeamException {
         Optional<TeamEntity> teamEntity = teamRepository.findByName(team);
 
         if (teamEntity.isEmpty()) {
             throw new UnknownTeamException(String.format("Team not found: %s", team));
-        } else {
-            log.trace("Team Entity: {}", teamEntity);
-            return teamEntity.get().getId();
         }
+
+        log.trace("Team Entity: {}", teamEntity);
+        return teamEntity.get();
     }
 
     @Override
