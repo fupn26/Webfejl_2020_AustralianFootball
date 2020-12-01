@@ -3,6 +3,7 @@ package hu.unideb.fupn26.dao;
 import hu.unideb.fupn26.dao.entity.*;
 import hu.unideb.fupn26.dao.repository.MatchRepository;
 import hu.unideb.fupn26.dao.repository.MatchStatRepository;
+import hu.unideb.fupn26.dao.repository.PlayerRepository;
 import hu.unideb.fupn26.dao.repository.TeamRepository;
 import hu.unideb.fupn26.exception.UnknownMatchException;
 import hu.unideb.fupn26.exception.UnknownTeamException;
@@ -24,11 +25,16 @@ public class MatchStatDaoImpl implements MatchStatDao{
     private final MatchStatRepository matchStatRepository;
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
+    private final PlayerRepository playerRepository;
 
     @Override
     public void createMatchStat(MatchStat matchStat) throws UnknownMatchException {
         MatchStatEntity matchStatEntity;
         MatchEntity matchEntity = queryMatchByMatchStat(matchStat);
+    }
+
+    private PlayerEntity queryPlayerByName(String name) {
+        return null;
     }
 
     private MatchEntity queryMatchByMatchStat(MatchStat matchStat) throws UnknownMatchException {
@@ -83,9 +89,7 @@ public class MatchStatDaoImpl implements MatchStatDao{
     }
 
     private int queryTeamIdByName(String team) throws UnknownTeamException {
-        Optional<TeamEntity> teamEntity = teamRepository.findByName(team).stream()
-                .filter(entity -> entity.getName().equals(team))
-                .findFirst();
+        Optional<TeamEntity> teamEntity = teamRepository.findByName(team);
 
         if (!teamEntity.isPresent()) {
             throw new UnknownTeamException(String.format("Team not found: %s", team));

@@ -155,9 +155,7 @@ public class MatchDaoImpl implements MatchDao {
 
     private TeamEntity queryTeamByName(String team) {
         //TODO what if team is not found?
-        Optional<TeamEntity> teamEntity = teamRepository.findByName(team).stream()
-                .filter(entity -> entity.getName().equals(team))
-                .findFirst();
+        Optional<TeamEntity> teamEntity = teamRepository.findByName(team);
 
         log.trace("Team Entity: {}", teamEntity);
         return teamEntity.get();
