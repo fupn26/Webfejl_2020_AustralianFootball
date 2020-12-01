@@ -29,11 +29,11 @@ public class MatchDaoImpl implements MatchDao {
 
         matchEntity = MatchEntity.builder()
                 .id(String.format("%d_%s_%d_%d", match.getSeason(), match.getRound(),
-                        queryTeamIdByName(match.getTeam1()).getId(), queryTeamIdByName(match.getTeam2()).getId()))
+                        queryTeamByName(match.getTeam1()).getId(), queryTeamByName(match.getTeam2()).getId()))
                 .season(match.getSeason())
                 .round(match.getRound())
-                .team1(queryTeamIdByName(match.getTeam1()))
-                .team2(queryTeamIdByName(match.getTeam2()))
+                .team1(queryTeamByName(match.getTeam1()))
+                .team2(queryTeamByName(match.getTeam2()))
                 .team1Location(match.getTeam1Location())
                 .team2Location(match.getTeam2Location())
                 .startDate(match.getStartDate())
@@ -41,12 +41,12 @@ public class MatchDaoImpl implements MatchDao {
                 .attendants(match.getAttendants())
                 .margin(match.getMargin())
                 .winnerScore(match.getWinnerScore())
-                .winnerTeam(queryTeamIdByName(match.getWinnerTeam()).getId())
+                .winnerTeam(queryTeamByName(match.getWinnerTeam()).getId())
                 .winnerLocation(match.getWinnerLocation())
                 .loserScore(match.getLoserScore())
-                .loserTeam(queryTeamIdByName(match.getLoserTeam()).getId())
+                .loserTeam(queryTeamByName(match.getLoserTeam()).getId())
                 .loserLocation(match.getLoserLocation())
-                .homeTeam(queryTeamIdByName(match.getHomeTeam()).getId())
+                .homeTeam(queryTeamByName(match.getHomeTeam()).getId())
                 .homeScore(match.getHomeScore())
                 .homeQ1Goals(match.getHomeQ1Goals())
                 .homeQ2Goals(match.getHomeQ2Goals())
@@ -58,7 +58,7 @@ public class MatchDaoImpl implements MatchDao {
                 .homeQ3Behinds(match.getHomeQ3Behinds())
                 .homeQ4Behinds(match.getHomeQ4Behinds())
                 .homeExtraTimeBehinds(match.getHomeExtraTimeBehinds())
-                .awayTeam(queryTeamIdByName(match.getAwayTeam()).getId())
+                .awayTeam(queryTeamByName(match.getAwayTeam()).getId())
                 .awayScore(match.getAwayScore())
                 .awayQ1Goals(match.getAwayQ1Goals())
                 .awayQ2Goals(match.getAwayQ2Goals())
@@ -134,7 +134,7 @@ public class MatchDaoImpl implements MatchDao {
     @Override
     public void deleteMatch(Match match) throws UnknownMatchException {
         String id = String.format("%d_%s_%d_%d", match.getSeason(), match.getRound(),
-                queryTeamIdByName(match.getTeam1()).getId(), queryTeamIdByName(match.getTeam2()).getId());
+                queryTeamByName(match.getTeam1()).getId(), queryTeamByName(match.getTeam2()).getId());
 
         if (!matchRepository.findById(id).isPresent()) {
             throw new UnknownMatchException(String.format("Match not found: %s", match), match);
@@ -153,7 +153,8 @@ public class MatchDaoImpl implements MatchDao {
         return teamEntity.get().getName();
     }
 
-    private TeamEntity queryTeamIdByName(String team) {
+    private TeamEntity queryTeamByName(String team) {
+        //TODO what if team is not found?
         Optional<TeamEntity> teamEntity = teamRepository.findByName(team).stream()
                 .filter(entity -> entity.getName().equals(team))
                 .findFirst();
