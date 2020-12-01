@@ -12,4 +12,8 @@ public class UnknownMatchException extends Exception {
         super(message);
         this.match = match;
     }
+
+    public UnknownMatchException(String message) {
+        super(message);
+    }
 }
