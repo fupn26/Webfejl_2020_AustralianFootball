@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface TeamRepository extends CrudRepository<TeamEntity, Integer> {
 
     Optional<TeamEntity> findByName(String name);
+    long deleteByName(String name);
 }

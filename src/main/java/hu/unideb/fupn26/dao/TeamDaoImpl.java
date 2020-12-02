@@ -1,23 +1,60 @@
 package hu.unideb.fupn26.dao;
 
+import hu.unideb.fupn26.dao.entity.TeamEntity;
+import hu.unideb.fupn26.dao.repository.TeamRepository;
+import hu.unideb.fupn26.exception.TeamAlreadyExistsException;
+import hu.unideb.fupn26.exception.UnknownTeamException;
 import hu.unideb.fupn26.model.Team;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+@Service
+@Slf4j
+@RequiredArgsConstructor
 public class TeamDaoImpl implements TeamDao{
 
-    @Override
-    public void createTeam(Team team) {
+    private final TeamRepository teamRepository;
 
+    @Override
+    public void createTeam(Team team) throws TeamAlreadyExistsException {
+
+        if (teamRepository.findByName(team.getTeamName()).isPresent())
+            throw new TeamAlreadyExistsException(String.format("Team already exists: %s", team));
+
+        TeamEntity teamEntity = TeamEntity.builder()
+                .name(team.getTeamName())
+                .build();
+
+        try {
+            teamRepository.save(teamEntity);
+        } catch (Exception e) {
+            log.error("Can't create new team: {}", e.getMessage());
+        }
     }
 
     @Override
     public Collection<Team> readAll() {
-        return null;
+        return StreamSupport.stream(teamRepository.findAll().spliterator(), false)
+                .map(entity -> Team.builder()
+                        .teamName(entity.getName())
+                        .build()
+                )
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void deleteMatchStat(Team team) {
+    public void deleteTeam(Team team) throws UnknownTeamException {
+        Optional<TeamEntity> teamEntity = teamRepository.findByName(team.getTeamName());
 
+        if (teamEntity.isEmpty())
+            throw new UnknownTeamException(String.format("Team not found: %s", team));
+
+        teamRepository.delete(teamEntity.get());
     }
 }

@@ -1,6 +1,7 @@
 package hu.unideb.fupn26.dao.entity;
 
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -14,7 +15,7 @@ import javax.persistence.*;
 public class TeamEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "tid")
     private int id;
 
