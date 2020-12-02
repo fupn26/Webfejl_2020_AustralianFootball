@@ -91,8 +91,8 @@ public class MatchStatDaoImpl implements MatchStatDao{
     private MatchEntity queryMatchByMatchStat(MatchStat matchStat) throws UnknownMatchException {
         int playerTeamId;
         int opponentTeamId;
-        String playerTeamVsOpponentTeamMatch;
-        String opponentTeamVsPlayerTeamMatch;
+        String playerTeamVsOpponentTeamMatchId;
+        String opponentTeamVsPlayerTeamMatchId;
 
         try {
             playerTeamId = queryTeamByName(matchStat.getPlayerTeam()).getId();
@@ -102,14 +102,14 @@ public class MatchStatDaoImpl implements MatchStatDao{
             throw new UnknownMatchException(String.format("Match not found: %s", e.getMessage()));
         }
 
-        playerTeamVsOpponentTeamMatch = String.format("%d_%s_%d_%d"
+        playerTeamVsOpponentTeamMatchId = String.format("%d_%s_%d_%d"
                 ,matchStat.getSeason()
                 ,matchStat.getRound()
                 ,playerTeamId
                 ,opponentTeamId
         );
 
-        opponentTeamVsPlayerTeamMatch = String.format("%d_%s_%d_%d"
+        opponentTeamVsPlayerTeamMatchId = String.format("%d_%s_%d_%d"
                 ,matchStat.getSeason()
                 ,matchStat.getRound()
                 ,opponentTeamId
@@ -117,7 +117,7 @@ public class MatchStatDaoImpl implements MatchStatDao{
         );
 
         Optional<MatchEntity> matchEntity = StreamSupport.stream (matchRepository
-                .findAllById(Arrays.asList(playerTeamVsOpponentTeamMatch, opponentTeamVsPlayerTeamMatch))
+                .findAllById(Arrays.asList(playerTeamVsOpponentTeamMatchId, opponentTeamVsPlayerTeamMatchId))
                 .spliterator(), false)
                 .filter(entity -> {
                     if (entity.getTeam1().getId() == playerTeamId
