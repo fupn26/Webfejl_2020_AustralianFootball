@@ -5,6 +5,7 @@ import hu.unideb.fupn26.dao.entity.TeamEntity;
 import hu.unideb.fupn26.dao.repository.MatchRepository;
 import hu.unideb.fupn26.dao.repository.TeamRepository;
 import hu.unideb.fupn26.exception.UnknownMatchException;
+import hu.unideb.fupn26.exception.UnknownTeamException;
 import hu.unideb.fupn26.model.Match;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ public class MatchDaoImpl implements MatchDao {
     private final MatchRepository matchRepository;
 
     @Override
-    public void createMatch(Match match) {
+    public void createMatch(Match match) throws UnknownTeamException {
         MatchEntity matchEntity;
 
         matchEntity = MatchEntity.builder()
@@ -132,7 +133,7 @@ public class MatchDaoImpl implements MatchDao {
     }
 
     @Override
-    public void deleteMatch(Match match) throws UnknownMatchException {
+    public void deleteMatch(Match match) throws UnknownMatchException, UnknownTeamException {
         String id = String.format("%d_%s_%d_%d", match.getSeason(), match.getRound(),
                 queryTeamByName(match.getTeam1()).getId(), queryTeamByName(match.getTeam2()).getId());
 
@@ -147,15 +148,17 @@ public class MatchDaoImpl implements MatchDao {
 
         if (!teamEntity.isPresent()) {
             log.warn("Team not found by id {}", teamId);
-            return null;
+            return "Unknown";
         }
 
         return teamEntity.get().getName();
     }
 
-    private TeamEntity queryTeamByName(String team) {
-        //TODO what if team is not found?
+    private TeamEntity queryTeamByName(String team) throws UnknownTeamException {
         Optional<TeamEntity> teamEntity = teamRepository.findByName(team);
+
+        if (teamEntity.isEmpty())
+            throw new UnknownTeamException(String.format("Team not found: %s", team));
 
         log.trace("Team Entity: {}", teamEntity);
         return teamEntity.get();

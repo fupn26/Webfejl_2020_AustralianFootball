@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public interface MatchDao {
 
-    void createMatch(Match match);
+    void createMatch(Match match) throws UnknownTeamException;
     Collection<Match> readAll() throws UnknownTeamException;
-    void deleteMatch(Match match) throws UnknownMatchException;
+    void deleteMatch(Match match) throws UnknownMatchException, UnknownTeamException;
 }
