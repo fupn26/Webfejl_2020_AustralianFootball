@@ -59,15 +59,15 @@ public class PlayerDaoImpl implements PlayerDao{
     @Override
     public Collection<Player> readAll() {
         return StreamSupport.stream(playerRepository.findAll().spliterator(), false)
-                .map(entity -> Player.builder()
-                        .yearOfBirth(entity.getBirthDate().toLocalDateTime().getYear())
-                        .monthOfBirth(entity.getBirthDate().toLocalDateTime().getMonthValue())
-                        .dayOfBirth(entity.getBirthDate().toLocalDateTime().getDayOfMonth())
-                        .firstName(entity.getFirstName())
-                        .lastName(entity.getLastName())
-                        .height(entity.getHeight())
-                        .weight(entity.getWeight())
-                        .build()
+                .map(entity -> new Player(
+                        entity.getBirthDate().toLocalDateTime().getYear(),
+                        entity.getBirthDate().toLocalDateTime().getMonthValue(),
+                        entity.getBirthDate().toLocalDateTime().getDayOfMonth(),
+                        entity.getFirstName(),
+                        entity.getLastName(),
+                        entity.getHeight(),
+                        entity.getWeight()
+                        )
                 )
                 .collect(Collectors.toList());
     }

@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 @ToString
 @Getter
 @EqualsAndHashCode
-@Builder
 public class Player {
 
     private int yearOfBirth;

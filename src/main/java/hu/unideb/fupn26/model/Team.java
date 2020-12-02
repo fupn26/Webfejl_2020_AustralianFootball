@@ -6,7 +6,6 @@ import lombok.*;
 @ToString
 @Getter
 @EqualsAndHashCode
-@Builder
 public class Team {
 
     String teamName;
