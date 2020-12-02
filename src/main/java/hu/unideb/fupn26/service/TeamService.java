@@ -1,4 +1,14 @@
 package hu.unideb.fupn26.service;
 
+import hu.unideb.fupn26.exception.TeamAlreadyExistsException;
+import hu.unideb.fupn26.exception.UnknownTeamException;
+import hu.unideb.fupn26.model.Team;
+
+import java.util.Collection;
+
 public interface TeamService {
+    Collection<Team> getAllAddress();
+
+    void recordAddress(Team team) throws TeamAlreadyExistsException;
+    void deleteTeam(Team team) throws UnknownTeamException;
 }
