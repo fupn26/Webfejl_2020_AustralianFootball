@@ -85,48 +85,48 @@ public class MatchDaoImpl implements MatchDao {
     @Override
     public Collection<Match> readAll() {
         return StreamSupport.stream(matchRepository.findAll().spliterator(), false)
-                .map(entity -> Match.builder()
-                        .season(entity.getSeason())
-                        .round(entity.getRound())
-                        .team1(entity.getTeam1().getName())
-                        .team2(entity.getTeam2().getName())
-                        .team1Location(entity.getTeam1Location())
-                        .team2Location(entity.getTeam2Location())
-                        .startDate(entity.getStartDate())
-                        .venue(entity.getVenue())
-                        .attendants(entity.getAttendants())
-                        .margin(entity.getMargin())
-                        .winnerScore(entity.getWinnerScore())
-                        .winnerTeam(queryTeamNameById(entity.getWinnerTeam()))
-                        .winnerLocation(entity.getWinnerLocation())
-                        .loserScore(entity.getLoserScore())
-                        .loserTeam(queryTeamNameById(entity.getLoserTeam()))
-                        .loserLocation(entity.getLoserLocation())
-                        .homeTeam(queryTeamNameById(entity.getHomeTeam()))
-                        .homeScore(entity.getHomeScore())
-                        .homeQ1Goals(entity.getHomeQ1Goals())
-                        .homeQ2Goals(entity.getHomeQ2Goals())
-                        .homeQ3Goals(entity.getHomeQ3Goals())
-                        .homeQ4Goals(entity.getHomeQ4Goals())
-                        .homeExtraTimeGoals(entity.getHomeExtraTimeGoals())
-                        .homeQ1Behinds(entity.getHomeQ1Behinds())
-                        .homeQ2Behinds(entity.getHomeQ2Behinds())
-                        .homeQ3Behinds(entity.getHomeQ3Behinds())
-                        .homeQ4Behinds(entity.getHomeQ4Behinds())
-                        .homeExtraTimeBehinds(entity.getHomeExtraTimeBehinds())
-                        .awayTeam(queryTeamNameById(entity.getAwayTeam()))
-                        .awayScore(entity.getAwayScore())
-                        .awayQ1Goals(entity.getAwayQ1Goals())
-                        .awayQ2Goals(entity.getAwayQ2Goals())
-                        .awayQ3Goals(entity.getAwayQ3Goals())
-                        .awayQ4Goals(entity.getAwayQ4Goals())
-                        .awayExtraTimeGoals(entity.getAwayExtraTimeGoals())
-                        .awayQ1Behinds(entity.getAwayQ1Behinds())
-                        .awayQ2Behinds(entity.getAwayQ2Behinds())
-                        .awayQ3Behinds(entity.getAwayQ3Behinds())
-                        .awayQ4Behinds(entity.getAwayQ4Behinds())
-                        .awayExtraTimeBehinds(entity.getAwayExtraTimeBehinds())
-                        .build()
+                .map(entity -> new Match(
+                        entity.getSeason(),
+                        entity.getRound(),
+                        entity.getTeam1().getName(),
+                        entity.getTeam2().getName(),
+                        entity.getTeam1Location(),
+                        entity.getTeam2Location(),
+                        entity.getStartDate(),
+                        entity.getVenue(),
+                        entity.getAttendants(),
+                        entity.getMargin(),
+                        queryTeamNameById(entity.getWinnerTeam()),
+                        entity.getWinnerScore(),
+                        entity.getWinnerLocation(),
+                        queryTeamNameById(entity.getLoserTeam()),
+                        entity.getLoserScore(),
+                        entity.getLoserLocation(),
+                        queryTeamNameById(entity.getHomeTeam()),
+                        entity.getHomeScore(),
+                        entity.getHomeQ1Goals(),
+                        entity.getHomeQ2Goals(),
+                        entity.getHomeQ3Goals(),
+                        entity.getHomeQ4Goals(),
+                        entity.getHomeExtraTimeGoals(),
+                        entity.getHomeQ1Behinds(),
+                        entity.getHomeQ2Behinds(),
+                        entity.getHomeQ3Behinds(),
+                        entity.getHomeQ4Behinds(),
+                        entity.getHomeExtraTimeBehinds(),
+                        queryTeamNameById(entity.getAwayTeam()),
+                        entity.getAwayScore(),
+                        entity.getAwayQ1Goals(),
+                        entity.getAwayQ2Goals(),
+                        entity.getAwayQ3Goals(),
+                        entity.getAwayQ4Goals(),
+                        entity.getAwayExtraTimeGoals(),
+                        entity.getAwayQ1Behinds(),
+                        entity.getAwayQ2Behinds(),
+                        entity.getAwayQ3Behinds(),
+                        entity.getAwayQ4Behinds(),
+                        entity.getAwayExtraTimeBehinds()
+                        )
                 )
                 .collect(Collectors.toList());
     }
