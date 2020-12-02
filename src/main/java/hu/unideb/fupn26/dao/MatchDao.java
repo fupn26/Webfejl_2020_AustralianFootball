@@ -10,6 +10,6 @@ import java.util.Collection;
 public interface MatchDao {
 
     void createMatch(Match match) throws UnknownTeamException;
-    Collection<Match> readAll() throws UnknownTeamException;
+    Collection<Match> readAll();
     void deleteMatch(Match match) throws UnknownMatchException, UnknownTeamException;
 }
