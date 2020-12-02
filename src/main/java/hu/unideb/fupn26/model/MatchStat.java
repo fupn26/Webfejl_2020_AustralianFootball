@@ -3,19 +3,26 @@ package hu.unideb.fupn26.model;
 import lombok.*;
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 @ToString
 @Getter
 @EqualsAndHashCode
-@Builder
 public class MatchStat {
 
+    @NonNull
     private String playerFirstName;
+    @NonNull
     private String playerLastName;
+    @NonNull
     private String playerTeam;
+    @NonNull
     private String opponentTeam;
+    @NonNull
     private Integer season;
+    @NonNull
     private String round;
-    private String location;
+    @NonNull
+    private String playerTeamLocation;
     private Integer kicks;
     private Integer marks;
     private Integer handballs;

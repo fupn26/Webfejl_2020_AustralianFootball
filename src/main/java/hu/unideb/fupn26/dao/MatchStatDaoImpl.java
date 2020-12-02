@@ -13,9 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.GeneratedValue;
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -41,7 +39,7 @@ public class MatchStatDaoImpl implements MatchStatDao{
         matchStatEntity = MatchStatEntity.builder()
                 .id(matchStatId)
                 .team(playerTeamEntity)
-                .location(matchStat.getLocation())
+                .location(matchStat.getPlayerTeamLocation())
                 .kicks(matchStat.getKicks())
                 .marks(matchStat.getMarks())
                 .handballs(matchStat.getHandballs())
@@ -121,10 +119,10 @@ public class MatchStatDaoImpl implements MatchStatDao{
                 .spliterator(), false)
                 .filter(entity -> {
                     if (entity.getTeam1().getId() == playerTeamId
-                            && entity.getTeam1Location().equals(matchStat.getLocation()))
+                            && entity.getTeam1Location().equals(matchStat.getPlayerTeamLocation()))
                         return true;
                     else if (entity.getTeam2().getId() == playerTeamId
-                            && entity.getTeam2Location().equals(matchStat.getLocation()))
+                            && entity.getTeam2Location().equals(matchStat.getPlayerTeamLocation()))
                         return true;
                     else
                         return false;
@@ -154,38 +152,38 @@ public class MatchStatDaoImpl implements MatchStatDao{
     @Override
     public Collection<MatchStat> readAll() {
         return StreamSupport.stream(matchStatRepository.findAll().spliterator(), false)
-                .map(entity -> MatchStat.builder()
-                        .playerFirstName(entity.getId().getPlayer().getFirstName())
-                        .playerLastName(entity.getId().getPlayer().getLastName())
-                        .playerTeam(entity.getTeam().getName())
-                        .opponentTeam(queryOpponentTeamName(entity))
-                        .season(entity.getId().getMatch().getSeason())
-                        .round(entity.getId().getMatch().getRound())
-                        .location(entity.getLocation())
-                        .kicks(entity.getKicks())
-                        .marks(entity.getMarks())
-                        .handballs(entity.getHandballs())
-                        .disposals(entity.getDisposals())
-                        .goals(entity.getGoals())
-                        .behinds(entity.getBehinds())
-                        .hitOuts(entity.getHitOuts())
-                        .tackles(entity.getTackles())
-                        .rebound50s(entity.getRebound50s())
-                        .inside50s(entity.getInside50s())
-                        .clearances(entity.getClearances())
-                        .clangers(entity.getClangers())
-                        .freeKicksFor(entity.getFreeKicksFor())
-                        .freeKicksAgainst(entity.getFreeKicksAgainst())
-                        .brownlowVotes(entity.getBrownlowVotes())
-                        .contestedPossessions(entity.getContestedPossessions())
-                        .uncontestedPossessions(entity.getUncontestedPossessions())
-                        .contestedMarks(entity.getContestedMarks())
-                        .marksInside50(entity.getMarksInside50())
-                        .onePercenters(entity.getOnePercenters())
-                        .bounces(entity.getBounces())
-                        .goalAssist(entity.getGoalAssist())
-                        .percentageOfGamePlayed(entity.getPercentageOfGamePlayed())
-                        .build()
+                .map(entity -> new MatchStat(
+                        entity.getId().getPlayer().getFirstName(),
+                        entity.getId().getPlayer().getLastName(),
+                        entity.getTeam().getName(),
+                        queryOpponentTeamName(entity),
+                        entity.getId().getMatch().getSeason(),
+                        entity.getId().getMatch().getRound(),
+                        entity.getLocation(),
+                        entity.getKicks(),
+                        entity.getMarks(),
+                        entity.getHandballs(),
+                        entity.getDisposals(),
+                        entity.getGoals(),
+                        entity.getBehinds(),
+                        entity.getHitOuts(),
+                        entity.getTackles(),
+                        entity.getRebound50s(),
+                        entity.getInside50s(),
+                        entity.getClearances(),
+                        entity.getClangers(),
+                        entity.getFreeKicksFor(),
+                        entity.getFreeKicksAgainst(),
+                        entity.getBrownlowVotes(),
+                        entity.getContestedPossessions(),
+                        entity.getUncontestedPossessions(),
+                        entity.getContestedMarks(),
+                        entity.getMarksInside50(),
+                        entity.getOnePercenters(),
+                        entity.getBounces(),
+                        entity.getGoalAssist(),
+                        entity.getPercentageOfGamePlayed()
+                        )
                 )
                 .collect(Collectors.toList());
     }
