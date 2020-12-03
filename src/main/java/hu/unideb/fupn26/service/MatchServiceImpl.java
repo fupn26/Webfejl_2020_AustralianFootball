@@ -4,7 +4,6 @@ import hu.unideb.fupn26.dao.MatchDao;
 import hu.unideb.fupn26.exception.UnknownMatchException;
 import hu.unideb.fupn26.exception.UnknownTeamException;
 import hu.unideb.fupn26.model.Match;
-import hu.unideb.fupn26.model.Team;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,10 +24,10 @@ public class MatchServiceImpl implements MatchService{
     }
 
     @Override
-    public Collection<Match> getAllMatchByTeam(Team team) {
+    public Collection<Match> getAllMatchByTeam(String teamName) {
         return matchDao.readAll().stream()
-                .filter(match -> match.getTeam1().equals(team.getTeamName()) ||
-                        match.getTeam2().equals(team.getTeamName())
+                .filter(match -> match.getTeam1().equals(teamName) ||
+                        match.getTeam2().equals(teamName)
                 )
                 .collect(Collectors.toList());
     }
