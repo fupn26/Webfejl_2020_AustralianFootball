@@ -5,8 +5,6 @@ import hu.unideb.fupn26.exception.UnknownMatchException;
 import hu.unideb.fupn26.exception.UnknownPlayerException;
 import hu.unideb.fupn26.exception.UnknownTeamException;
 import hu.unideb.fupn26.model.MatchStat;
-import hu.unideb.fupn26.model.Player;
-import hu.unideb.fupn26.model.Team;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,19 +25,19 @@ public class MatchStatServiceImpl implements MatchStatService{
     }
 
     @Override
-    public Collection<MatchStat> getAllMatchStatByPlayer(Player player) {
+    public Collection<MatchStat> getAllMatchStatByPlayer(String firstName, String lastName) {
         return matchStatDao.readAll().stream()
-                .filter(matchStat -> matchStat.getPlayerFirstName().equals(player.getFirstName()) &&
-                            matchStat.getPlayerLastName().equals(player.getLastName())
+                .filter(matchStat -> matchStat.getPlayerFirstName().equals(firstName) &&
+                            matchStat.getPlayerLastName().equals(lastName)
                 )
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<MatchStat> getAllMatchStatByTeam(Team team) {
+    public Collection<MatchStat> getAllMatchStatByTeam(String teamName) {
         return matchStatDao.readAll().stream()
-                .filter(matchStat -> matchStat.getPlayerTeam().equals(team.getTeamName()) ||
-                        matchStat.getOpponentTeam().equals(team.getTeamName())
+                .filter(matchStat -> matchStat.getPlayerTeam().equals(teamName) ||
+                        matchStat.getOpponentTeam().equals(teamName)
                 )
                 .collect(Collectors.toList());
     }
