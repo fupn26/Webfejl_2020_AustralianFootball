@@ -8,5 +8,6 @@ import lombok.*;
 @EqualsAndHashCode
 public class Team {
 
+    Integer id;
     String teamName;
 }
