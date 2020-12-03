@@ -33,8 +33,8 @@ public class TeamController {
         }
     }
 
-    @GetMapping("/team/get_all")
-    public Collection<TeamDto> listAddresses(){
+    @GetMapping("/team/get/all")
+    public Collection<TeamDto> listPlayers(){
         return teamService.getAllTeam()
                 .stream()
                 .map(model -> new TeamDto(model.getTeamName()))
