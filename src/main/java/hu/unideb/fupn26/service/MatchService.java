@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public interface MatchService {
 
-    Collection<Match> getAllMatch() throws UnknownTeamException;
+    Collection<Match> getAllMatch();
     Collection<Match> getAllMatchByTeam(String teamName);
 
     void recordMatch(Match match) throws UnknownTeamException;
