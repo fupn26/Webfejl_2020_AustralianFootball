@@ -7,8 +7,8 @@ import hu.unideb.fupn26.model.Team;
 import java.util.Collection;
 
 public interface TeamService {
-    Collection<Team> getAllAddress();
+    Collection<Team> getAllTeam();
 
-    void recordAddress(Team team) throws TeamAlreadyExistsException;
+    void recordTeam(Team team) throws TeamAlreadyExistsException;
     void deleteTeam(Team team) throws UnknownTeamException;
 }

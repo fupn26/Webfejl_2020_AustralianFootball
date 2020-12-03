@@ -18,12 +18,12 @@ public class TeamServiceImpl implements TeamService{
     private final TeamDao teamDao;
 
     @Override
-    public Collection<Team> getAllAddress() {
+    public Collection<Team> getAllTeam() {
         return teamDao.readAll();
     }
 
     @Override
-    public void recordAddress(Team team) throws TeamAlreadyExistsException {
+    public void recordTeam(Team team) throws TeamAlreadyExistsException {
         teamDao.createTeam(team);
     }
 
