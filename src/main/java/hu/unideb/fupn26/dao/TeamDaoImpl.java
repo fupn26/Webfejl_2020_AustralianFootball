@@ -41,7 +41,7 @@ public class TeamDaoImpl implements TeamDao{
     @Override
     public Collection<Team> readAll() {
         return StreamSupport.stream(teamRepository.findAll().spliterator(), false)
-                .map(entity -> new Team(entity.getName()))
+                .map(entity -> new Team(entity.getId(), entity.getName()))
                 .collect(Collectors.toList());
     }
 
