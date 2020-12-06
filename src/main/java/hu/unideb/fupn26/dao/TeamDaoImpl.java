@@ -47,7 +47,7 @@ public class TeamDaoImpl implements TeamDao{
 
     @Override
     public void deleteTeam(Team team) throws UnknownTeamException {
-        Optional<TeamEntity> teamEntity = teamRepository.findByName(team.getTeamName());
+        Optional<TeamEntity> teamEntity = teamRepository.findById(team.getId());
 
         if (teamEntity.isEmpty())
             throw new UnknownTeamException(String.format("Team not found: %s", team));
