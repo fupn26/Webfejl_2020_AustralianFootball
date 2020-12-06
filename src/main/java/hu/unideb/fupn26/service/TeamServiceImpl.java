@@ -1,6 +1,7 @@
 package hu.unideb.fupn26.service;
 
 import hu.unideb.fupn26.dao.TeamDao;
+import hu.unideb.fupn26.exception.InvalidTeamNameException;
 import hu.unideb.fupn26.exception.TeamAlreadyExistsException;
 import hu.unideb.fupn26.exception.UnknownTeamException;
 import hu.unideb.fupn26.model.Team;
@@ -23,7 +24,7 @@ public class TeamServiceImpl implements TeamService{
     }
 
     @Override
-    public void recordTeam(Team team) throws TeamAlreadyExistsException {
+    public void recordTeam(Team team) throws TeamAlreadyExistsException, InvalidTeamNameException {
         teamDao.createTeam(team);
     }
 

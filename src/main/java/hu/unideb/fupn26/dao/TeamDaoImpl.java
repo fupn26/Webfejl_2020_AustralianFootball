@@ -2,6 +2,7 @@ package hu.unideb.fupn26.dao;
 
 import hu.unideb.fupn26.dao.entity.TeamEntity;
 import hu.unideb.fupn26.dao.repository.TeamRepository;
+import hu.unideb.fupn26.exception.InvalidTeamNameException;
 import hu.unideb.fupn26.exception.TeamAlreadyExistsException;
 import hu.unideb.fupn26.exception.UnknownTeamException;
 import hu.unideb.fupn26.model.Team;
@@ -22,7 +23,10 @@ public class TeamDaoImpl implements TeamDao{
     private final TeamRepository teamRepository;
 
     @Override
-    public void createTeam(Team team) throws TeamAlreadyExistsException {
+    public void createTeam(Team team) throws TeamAlreadyExistsException, InvalidTeamNameException {
+
+        if (team.getTeamName().isEmpty() || team.getTeamName().trim().isEmpty())
+            throw new InvalidTeamNameException("Team name is empty.");
 
         if (teamRepository.findByName(team.getTeamName()).isPresent())
             throw new TeamAlreadyExistsException(String.format("Team already exists: %s", team));
@@ -47,7 +51,12 @@ public class TeamDaoImpl implements TeamDao{
 
     @Override
     public void deleteTeam(Team team) throws UnknownTeamException {
-        Optional<TeamEntity> teamEntity = teamRepository.findByName(team.getTeamName());
+        Optional<TeamEntity> teamEntity;
+
+        if (team.getId() != null)
+            teamEntity = teamRepository.findById(team.getId());
+        else
+            teamEntity = teamRepository.findByName(team.getTeamName());
 
         if (teamEntity.isEmpty())
             throw new UnknownTeamException(String.format("Team not found: %s", team));

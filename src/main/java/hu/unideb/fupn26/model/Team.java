@@ -3,13 +3,19 @@ package hu.unideb.fupn26.model;
 import lombok.*;
 
 @AllArgsConstructor
-@RequiredArgsConstructor
 @ToString
 @Getter
 @EqualsAndHashCode
 public class Team {
 
     Integer id;
-    @NonNull
     String teamName;
+
+    public Team(int id) {
+        this.id = id;
+    }
+
+    public Team(String teamName) {
+        this.teamName = teamName;
+    }
 }

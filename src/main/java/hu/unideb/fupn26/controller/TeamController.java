@@ -1,6 +1,7 @@
 package hu.unideb.fupn26.controller;
 
 import hu.unideb.fupn26.controller.dto.TeamDto;
+import hu.unideb.fupn26.exception.InvalidTeamNameException;
 import hu.unideb.fupn26.exception.TeamAlreadyExistsException;
 import hu.unideb.fupn26.exception.UnknownTeamException;
 import hu.unideb.fupn26.model.Team;
@@ -22,29 +23,38 @@ public class TeamController {
     private final TeamService teamService;
 
     @PostMapping("/team/create")
-    public void record(@RequestBody TeamDto requestDto) {
+    public void record(@RequestParam(name="Team name") String teamName) {
         try {
-            teamService.recordTeam(new Team(requestDto.getTeamName()));
-        } catch (TeamAlreadyExistsException e) {
+            teamService.recordTeam(new Team(teamName));
+        } catch (TeamAlreadyExistsException | InvalidTeamNameException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @GetMapping("/team/get/all")
-    public Collection<TeamDto> listPlayers(){
+    public Collection<TeamDto> listTeams(){
         return teamService.getAllTeam()
                 .stream()
-                .map(model -> new TeamDto(model.getTeamName()))
+                .map(model -> new TeamDto(model.getId(), model.getTeamName()))
                 .collect(Collectors.toList());
     }
 
-    @DeleteMapping("/team/delete")
-    public void delete(@RequestBody TeamDto requestDto) {
+
+    @DeleteMapping("/team/delete/id")
+    public void deleteById(@RequestParam("Team id") int id) {
         try {
-            teamService.deleteTeam(new Team(requestDto.getTeamName()));
+            teamService.deleteTeam(new Team(id));
         } catch (UnknownTeamException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
+    @DeleteMapping("/team/delete/name")
+    public void deleteByName(@RequestParam("Team name") String teamName) {
+        try {
+            teamService.deleteTeam(new Team(teamName));
+        } catch (UnknownTeamException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
 }
