@@ -32,6 +32,7 @@ public class TeamDaoImpl implements TeamDao{
                 .name(team.getTeamName())
                 .build();
 
+        log.info("TeamEntity: {}", teamEntity);
         try {
             teamRepository.save(teamEntity);
         } catch (Exception e) {
