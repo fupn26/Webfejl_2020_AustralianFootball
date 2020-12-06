@@ -43,6 +43,21 @@ public class TeamDaoImpl implements TeamDao{
     }
 
     @Override
+    public void updateTeam(Team team) throws UnknownTeamException {
+
+        Optional<TeamEntity> teamEntity = teamRepository.findById(team.getId());
+
+        if (teamEntity.isEmpty())
+            throw new UnknownTeamException(String.format("Team not found: %s", team));
+
+        try {
+            teamRepository.save(teamEntity.get());
+        } catch (Exception e) {
+            log.error("Can't update team: {}", e.getMessage());
+        }
+    }
+
+    @Override
     public Collection<Team> readAll() {
         return StreamSupport.stream(teamRepository.findAll().spliterator(), false)
                 .map(entity -> new Team(entity.getId(), entity.getName()))

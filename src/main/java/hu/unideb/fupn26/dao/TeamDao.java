@@ -10,6 +10,7 @@ import java.util.Collection;
 public interface TeamDao {
 
     void createTeam(Team team) throws TeamAlreadyExistsException, InvalidTeamNameException;
+    void updateTeam(Team team) throws UnknownTeamException;
     Collection<Team> readAll();
     void deleteTeam(Team team) throws UnknownTeamException;
 }
