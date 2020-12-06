@@ -14,7 +14,7 @@ import java.util.Collection;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class TeamServiceImpl implements TeamService{
+public class TeamServiceImpl implements TeamService {
 
     private final TeamDao teamDao;
 
@@ -25,11 +25,17 @@ public class TeamServiceImpl implements TeamService{
 
     @Override
     public void recordTeam(Team team) throws TeamAlreadyExistsException, InvalidTeamNameException {
+        if (team.getTeamName().isEmpty() || team.getTeamName().trim().isEmpty())
+            throw new InvalidTeamNameException("Team name is empty");
+
         teamDao.createTeam(team);
     }
 
     @Override
-    public void updateTeam(Team team) throws UnknownTeamException {
+    public void updateTeam(Team team) throws UnknownTeamException, InvalidTeamNameException {
+        if (team.getTeamName().isEmpty() || team.getTeamName().trim().isEmpty())
+            throw new InvalidTeamNameException("Team name is empty");
+
         teamDao.updateTeam(team);
     }
 

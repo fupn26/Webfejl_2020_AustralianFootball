@@ -25,7 +25,7 @@ public class TeamController {
     @PostMapping("/team/create")
     public void record(@RequestParam(name="Team name") String teamName) {
         try {
-            teamService.recordTeam(new Team(teamName));
+            teamService.recordTeam(new Team(teamName.trim()));
         } catch (TeamAlreadyExistsException | InvalidTeamNameException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -39,6 +39,14 @@ public class TeamController {
                 .collect(Collectors.toList());
     }
 
+    @PostMapping("/team/update")
+    public void update(@RequestParam("Team id") int id, @RequestParam("New team name") String newTeamName) {
+        try {
+            teamService.updateTeam(new Team(id, newTeamName.trim()));
+        } catch (UnknownTeamException | InvalidTeamNameException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
 
     @DeleteMapping("/team/delete/id")
     public void deleteById(@RequestParam("Team id") int id) {
@@ -52,7 +60,7 @@ public class TeamController {
     @DeleteMapping("/team/delete/name")
     public void deleteByName(@RequestParam("Team name") String teamName) {
         try {
-            teamService.deleteTeam(new Team(teamName));
+            teamService.deleteTeam(new Team(teamName.trim()));
         } catch (UnknownTeamException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }

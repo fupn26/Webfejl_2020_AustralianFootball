@@ -23,10 +23,7 @@ public class TeamDaoImpl implements TeamDao{
     private final TeamRepository teamRepository;
 
     @Override
-    public void createTeam(Team team) throws TeamAlreadyExistsException, InvalidTeamNameException {
-
-        if (team.getTeamName().isEmpty() || team.getTeamName().trim().isEmpty())
-            throw new InvalidTeamNameException("Team name is empty.");
+    public void createTeam(Team team) throws TeamAlreadyExistsException {
 
         if (teamRepository.findByName(team.getTeamName()).isPresent())
             throw new TeamAlreadyExistsException(String.format("Team already exists: %s", team));
@@ -50,8 +47,11 @@ public class TeamDaoImpl implements TeamDao{
         if (teamEntity.isEmpty())
             throw new UnknownTeamException(String.format("Team not found: %s", team));
 
+        TeamEntity newTeamEntity = teamEntity.get();
+        newTeamEntity.setName(team.getTeamName());
+
         try {
-            teamRepository.save(teamEntity.get());
+            teamRepository.save(newTeamEntity);
         } catch (Exception e) {
             log.error("Can't update team: {}", e.getMessage());
         }

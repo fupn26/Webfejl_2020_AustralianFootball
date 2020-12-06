@@ -11,6 +11,6 @@ public interface TeamService {
     Collection<Team> getAllTeam();
 
     void recordTeam(Team team) throws TeamAlreadyExistsException, InvalidTeamNameException;
-    void updateTeam(Team team) throws UnknownTeamException;
+    void updateTeam(Team team) throws UnknownTeamException, InvalidTeamNameException;
     void deleteTeam(Team team) throws UnknownTeamException;
 }
