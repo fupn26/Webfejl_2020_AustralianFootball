@@ -17,9 +17,8 @@ public class Match {
     private String team2;
     private MatchLocation team1Location;
     private MatchLocation team2Location;
-    private String winnerTeam;
-    private Integer winnerScore;
-    private Integer loserScore;
+    private Integer team1Score;
+    private Integer team2Score;
     private LocalDateTime startDate;
     private String venue;
     private Integer attendants;
@@ -51,18 +50,16 @@ public class Match {
                  String team2,
                  MatchLocation team1Location,
                  MatchLocation team2Location,
-                 String winnerTeam,
-                 int winnerScore,
-                 int loserScore) {
+                 int team1Score,
+                 int team2Score) {
         this.season = season;
         this.round = round;
         this.team1 = team1;
         this.team2 = team2;
         this.team1Location = team1Location;
         this.team2Location = team2Location;
-        this.winnerTeam = winnerTeam;
-        this.winnerScore = winnerScore;
-        this.loserScore = loserScore;
+        this.team1Score = team1Score;
+        this.team2Score = team2Score;
     }
 
     public Match(String id) {
