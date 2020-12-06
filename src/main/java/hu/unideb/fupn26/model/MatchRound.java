@@ -1,6 +1,6 @@
 package hu.unideb.fupn26.model;
 
-public enum MatchRoundsEnum {
+public enum MatchRound {
     EF,
     GF,
     PF,

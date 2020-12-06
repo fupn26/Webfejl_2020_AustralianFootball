@@ -2,45 +2,28 @@ package hu.unideb.fupn26.model;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
-@RequiredArgsConstructor
 @ToString
 @Getter
 @EqualsAndHashCode
 public class Match {
 
-    @NonNull
+    private String id;
     private Integer season;
-    @NonNull
-    private String round;
-    @NonNull
+    private MatchRound round;
     private String team1;
-    @NonNull
     private String team2;
-    @NonNull
-    private String team1Location;
-    @NonNull
-    private String team2Location;
-    private Timestamp startDate;
+    private MatchLocation team1Location;
+    private MatchLocation team2Location;
+    private String winnerTeam;
+    private Integer winnerScore;
+    private Integer loserScore;
+    private LocalDateTime startDate;
     private String venue;
     private Integer attendants;
     private Integer margin;
-    @NonNull
-    private String winnerTeam;
-    @NonNull
-    private Integer winnerScore;
-    private String winnerLocation;
-    @NonNull
-    private String loserTeam;
-    @NonNull
-    private Integer loserScore;
-    private String loserLocation;
-    @NonNull
-    private String homeTeam;
-    private Integer homeScore;
     private Integer homeQ1Goals;
     private Integer homeQ2Goals;
     private Integer homeQ3Goals;
@@ -51,9 +34,6 @@ public class Match {
     private Integer homeQ3Behinds;
     private Integer homeQ4Behinds;
     private Integer homeExtraTimeBehinds;
-    @NonNull
-    private String awayTeam;
-    private Integer awayScore;
     private Integer awayQ1Goals;
     private Integer awayQ2Goals;
     private Integer awayQ3Goals;
@@ -64,4 +44,28 @@ public class Match {
     private Integer awayQ3Behinds;
     private Integer awayQ4Behinds;
     private Integer awayExtraTimeBehinds;
+
+    public Match(int season,
+                 MatchRound round,
+                 String team1,
+                 String team2,
+                 MatchLocation team1Location,
+                 MatchLocation team2Location,
+                 String winnerTeam,
+                 int winnerScore,
+                 int loserScore) {
+        this.season = season;
+        this.round = round;
+        this.team1 = team1;
+        this.team2 = team2;
+        this.team1Location = team1Location;
+        this.team2Location = team2Location;
+        this.winnerTeam = winnerTeam;
+        this.winnerScore = winnerScore;
+        this.loserScore = loserScore;
+    }
+
+    public Match(String id) {
+        this.id = id;
+    }
 }
