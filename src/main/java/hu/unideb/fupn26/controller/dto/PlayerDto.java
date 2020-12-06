@@ -5,15 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
+
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlayerDto {
+public class PlayerDto extends PlayerCreateRequestDto {
 
-    private int yearOfBirth;
-    private int monthOfBirth;
-    private int dayOfBirth;
-    private String firstName;
-    private String lastName;
+    private Integer id;
 }

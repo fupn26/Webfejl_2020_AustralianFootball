@@ -11,7 +11,8 @@ import java.util.Collection;
 
 public interface PlayerDao {
 
-    void createPlayer(Player player) throws PlayerAlreadyExistsException;
+    void createPlayer(Player player);
+    void updatePlayer(Player player) throws UnknownPlayerException;
     Collection<Player> readAll();
     void deletePlayer(Player player) throws UnknownPlayerException;
 }

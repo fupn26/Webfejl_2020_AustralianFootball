@@ -2,7 +2,6 @@ package hu.unideb.fupn26.dao;
 
 import hu.unideb.fupn26.dao.entity.PlayerEntity;
 import hu.unideb.fupn26.dao.repository.PlayerRepository;
-import hu.unideb.fupn26.exception.PlayerAlreadyExistsException;
 import hu.unideb.fupn26.exception.UnknownPlayerException;
 import hu.unideb.fupn26.model.Player;
 import lombok.RequiredArgsConstructor;
@@ -10,11 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -25,23 +22,10 @@ public class PlayerDaoImpl implements PlayerDao{
     private final PlayerRepository playerRepository;
 
     @Override
-    public void createPlayer(Player player) throws PlayerAlreadyExistsException {
-        if (playerRepository.findByBirthDateAndFirstNameAndLastNameAndHeightAndWeight(
-                Timestamp.valueOf(LocalDate.of(player.getYearOfBirth(),
-                        player.getMonthOfBirth(),
-                        player.getDayOfBirth()).atStartOfDay()),
-                player.getFirstName(),
-                player.getLastName(),
-                player.getHeight(),
-                player.getWeight()
-            ).isPresent()
-        )
-            throw new PlayerAlreadyExistsException(String.format("Player already exists: %s", player));
+    public void createPlayer(Player player) {
 
         PlayerEntity playerEntity = PlayerEntity.builder()
-                .birthDate(Timestamp.valueOf(LocalDate.of(player.getYearOfBirth(),
-                                        player.getMonthOfBirth(),
-                                        player.getDayOfBirth()).atStartOfDay()))
+                .birthDate(Timestamp.valueOf(player.getBirthOfDate()))
                 .firstName(player.getFirstName())
                 .lastName(player.getLastName())
                 .height(player.getHeight())
@@ -57,12 +41,34 @@ public class PlayerDaoImpl implements PlayerDao{
     }
 
     @Override
+    public void updatePlayer(Player player) throws UnknownPlayerException {
+
+        Optional<PlayerEntity> playerEntity = playerRepository.findById(player.getId());
+
+        if (playerEntity.isEmpty())
+            throw new UnknownPlayerException(String.format("Player not found: %s", player));
+
+        PlayerEntity newPlayerEntity = playerEntity.get();
+        newPlayerEntity.setBirthDate(Timestamp.valueOf(player.getBirthOfDate()));
+        newPlayerEntity.setFirstName(player.getFirstName());
+        newPlayerEntity.setLastName(player.getLastName());
+        newPlayerEntity.setHeight(player.getHeight());
+        newPlayerEntity.setWeight(player.getWeight());
+
+        log.info("PlayerEntity: {}", newPlayerEntity);
+        try {
+            playerRepository.save(newPlayerEntity);
+        } catch (Exception e) {
+            log.error("Can't update player: {}", e.getMessage());
+        }
+    }
+
+    @Override
     public Collection<Player> readAll() {
         return StreamSupport.stream(playerRepository.findAll().spliterator(), false)
                 .map(entity -> new Player(
-                        entity.getBirthDate().toLocalDateTime().getYear(),
-                        entity.getBirthDate().toLocalDateTime().getMonthValue(),
-                        entity.getBirthDate().toLocalDateTime().getDayOfMonth(),
+                        entity.getId(),
+                        entity.getBirthDate().toLocalDateTime(),
                         entity.getFirstName(),
                         entity.getLastName(),
                         entity.getHeight(),
@@ -74,15 +80,8 @@ public class PlayerDaoImpl implements PlayerDao{
 
     @Override
     public void deletePlayer(Player player) throws UnknownPlayerException {
-        Optional<PlayerEntity> playerEntity = playerRepository.findByBirthDateAndFirstNameAndLastNameAndHeightAndWeight(
-                Timestamp.valueOf(LocalDate.of(player.getYearOfBirth(),
-                        player.getMonthOfBirth(),
-                        player.getDayOfBirth()).atStartOfDay()),
-                player.getFirstName(),
-                player.getLastName(),
-                player.getHeight(),
-                player.getWeight()
-        );
+
+        Optional<PlayerEntity> playerEntity = playerRepository.findById(player.getId());
 
         if (playerEntity.isEmpty())
             throw new UnknownPlayerException(String.format("Player not found: %s", player));

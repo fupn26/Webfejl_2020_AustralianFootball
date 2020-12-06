@@ -1,7 +1,7 @@
 package hu.unideb.fupn26.service;
 
 import hu.unideb.fupn26.dao.PlayerDao;
-import hu.unideb.fupn26.exception.PlayerAlreadyExistsException;
+import hu.unideb.fupn26.exception.InvalidPlayerArgumentException;
 import hu.unideb.fupn26.exception.UnknownPlayerException;
 import hu.unideb.fupn26.model.Player;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +23,32 @@ public class PlayerServiceImpl implements PlayerService{
     }
 
     @Override
-    public void recordPlayer(Player player) throws PlayerAlreadyExistsException {
+    public void recordPlayer(Player player) throws InvalidPlayerArgumentException {
+        validatePlayer(player);
+
         playerDao.createPlayer(player);
+    }
+
+    @Override
+    public void updatePlayer(Player player) throws InvalidPlayerArgumentException, UnknownPlayerException {
+        validatePlayer(player);
+
+        playerDao.updatePlayer(player);
     }
 
     @Override
     public void deletePlayer(Player player) throws UnknownPlayerException {
         playerDao.deletePlayer(player);
+    }
+
+    private void validatePlayer(Player player) throws InvalidPlayerArgumentException {
+        if (player.getWeight() < 0)
+            throw new InvalidPlayerArgumentException("The weight value is negative");
+        if (player.getHeight() < 0)
+            throw new InvalidPlayerArgumentException("The height value is negative.");
+        if (player.getLastName().trim().isEmpty())
+            throw new InvalidPlayerArgumentException("The last name is empty.");
+        if (player.getFirstName().trim().isEmpty())
+            throw new InvalidPlayerArgumentException("The first name is empty.");
     }
 }
