@@ -48,7 +48,7 @@ public class MatchDaoImpl implements MatchDao {
                 .team2(queryTeamByName(match.getTeam2()))
                 .team1Location(match.getTeam1Location().name().toLowerCase())
                 .team2Location(match.getTeam2Location().name().toLowerCase())
-                .startDate(Timestamp.valueOf(match.getStartDate()))
+                .startDate(match.getStartDate() != null ? Timestamp.valueOf(match.getStartDate()) : null)
                 .venue(match.getVenue())
                 .attendants(match.getAttendants())
                 .margin(match.getMargin())
@@ -136,7 +136,7 @@ public class MatchDaoImpl implements MatchDao {
                         entity.getWinnerTeam() == entity.getTeam2().getId() ?
                                 entity.getWinnerScore() :
                                 entity.getLoserScore(),
-                        entity.getStartDate().toLocalDateTime(),
+                        entity.getStartDate() != null ? entity.getStartDate().toLocalDateTime() : null,
                         entity.getVenue(),
                         entity.getAttendants(),
                         entity.getMargin(),
