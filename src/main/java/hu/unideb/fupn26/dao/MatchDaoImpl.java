@@ -3,7 +3,9 @@ package hu.unideb.fupn26.dao;
 import hu.unideb.fupn26.dao.entity.MatchEntity;
 import hu.unideb.fupn26.dao.entity.TeamEntity;
 import hu.unideb.fupn26.dao.repository.MatchRepository;
+import hu.unideb.fupn26.dao.repository.MatchStatRepository;
 import hu.unideb.fupn26.dao.repository.TeamRepository;
+import hu.unideb.fupn26.exception.MatchSqlIntegrityException;
 import hu.unideb.fupn26.exception.UnknownMatchException;
 import hu.unideb.fupn26.exception.UnknownTeamException;
 import hu.unideb.fupn26.model.Match;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Optional;
@@ -26,6 +29,7 @@ public class MatchDaoImpl implements MatchDao {
 
     private final TeamRepository teamRepository;
     private final MatchRepository matchRepository;
+    private final MatchStatRepository matchStatRepository;
 
     @Override
     public void createMatch(Match match) throws UnknownTeamException {
@@ -162,12 +166,21 @@ public class MatchDaoImpl implements MatchDao {
     }
 
     @Override
-    public void deleteMatch(Match match) throws UnknownMatchException {
+    public void deleteMatch(Match match) throws UnknownMatchException, MatchSqlIntegrityException {
 
         if (matchRepository.findById(match.getId()).isEmpty()) {
             throw new UnknownMatchException(String.format("Match not found: %s", match), match);
         }
-        matchRepository.deleteById(match.getId());
+
+        if (!matchStatRepository.findById_Match_Id(match.getId()).isEmpty()) {
+            throw new MatchSqlIntegrityException("Match can't be deleted because it is referenced in MatchStat table.");
+        }
+
+        try {
+            matchRepository.deleteById(match.getId());
+        } catch (Exception e) {
+            log.error("Can't delete match: {}", e.getMessage());
+        }
     }
 
     private String queryTeamNameById(int teamId) {
