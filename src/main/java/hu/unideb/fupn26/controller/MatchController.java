@@ -8,7 +8,6 @@ import hu.unideb.fupn26.model.Match;
 import hu.unideb.fupn26.service.MatchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.geolatte.geom.M;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -91,7 +90,10 @@ public class MatchController {
                 .team2Location(requestDto.getTeam2Location())
                 .team1Score(requestDto.getTeam1Score())
                 .team2Score(requestDto.getTeam2Score())
-                .startDate(LocalDateTime.parse(requestDto.getStartDate(), formatter))
+                .startDate(requestDto.getStartDate() != null ?
+                        LocalDateTime.parse(requestDto.getStartDate(), formatter) :
+                        null
+                )
                 .venue(requestDto.getVenue())
                 .attendants(requestDto.getAttendants())
                 .margin(requestDto.getMargin())
@@ -129,7 +131,10 @@ public class MatchController {
                 .team2Location(match.getTeam2Location())
                 .team1Score(match.getTeam1Score())
                 .team2Score(match.getTeam2Score())
-                .startDate(match.getStartDate() != null ? match.getStartDate().format(formatter) : null)
+                .startDate(match.getStartDate() != null ?
+                        match.getStartDate().format(formatter) :
+                        null
+                )
                 .venue(match.getVenue())
                 .attendants(match.getAttendants())
                 .margin(match.getMargin())
