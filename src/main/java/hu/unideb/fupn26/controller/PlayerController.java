@@ -4,6 +4,7 @@ import hu.unideb.fupn26.controller.dto.PlayerDto;
 import hu.unideb.fupn26.controller.dto.PlayerCreateRequestDto;
 import hu.unideb.fupn26.exception.InvalidPlayerArgumentException;
 import hu.unideb.fupn26.exception.PlayerAlreadyExistsException;
+import hu.unideb.fupn26.exception.PlayerSqlIntegrityException;
 import hu.unideb.fupn26.exception.UnknownPlayerException;
 import hu.unideb.fupn26.model.Player;
 import hu.unideb.fupn26.service.PlayerService;
@@ -39,7 +40,7 @@ public class PlayerController {
                     requestDto.getHeight(),
                     requestDto.getWeight()
             ));
-        } catch (DateTimeParseException e) {
+        } catch (DateTimeParseException | NullPointerException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Date format! Please use the following pattern: yyyy-MM-dd HH:mm:ss");
         } catch (InvalidPlayerArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -84,8 +85,7 @@ public class PlayerController {
     public void delete(@RequestParam("Player id") int id) {
         try {
             playerService.deletePlayer(new Player(id));
-
-        } catch (UnknownPlayerException e) {
+        } catch (UnknownPlayerException | PlayerSqlIntegrityException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

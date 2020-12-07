@@ -1,7 +1,10 @@
 package hu.unideb.fupn26.dao;
 
 import hu.unideb.fupn26.dao.entity.PlayerEntity;
+import hu.unideb.fupn26.dao.repository.MatchStatRepository;
 import hu.unideb.fupn26.dao.repository.PlayerRepository;
+import hu.unideb.fupn26.exception.PlayerSqlIntegrityException;
+import hu.unideb.fupn26.exception.TeamSqlIntegrityException;
 import hu.unideb.fupn26.exception.UnknownPlayerException;
 import hu.unideb.fupn26.model.Player;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ import java.util.stream.StreamSupport;
 public class PlayerDaoImpl implements PlayerDao{
 
     private final PlayerRepository playerRepository;
+    private final MatchStatRepository matchStatRepository;
 
     @Override
     public void createPlayer(Player player) {
@@ -79,12 +83,15 @@ public class PlayerDaoImpl implements PlayerDao{
     }
 
     @Override
-    public void deletePlayer(Player player) throws UnknownPlayerException {
+    public void deletePlayer(Player player) throws UnknownPlayerException, PlayerSqlIntegrityException {
 
         Optional<PlayerEntity> playerEntity = playerRepository.findById(player.getId());
 
         if (playerEntity.isEmpty())
             throw new UnknownPlayerException(String.format("Player not found: %s", player));
+
+        if (!matchStatRepository.findById_Player_Id(player.getId()).isEmpty())
+            throw new PlayerSqlIntegrityException("Player can't be deleted because it is referenced in MatchStat table");
 
         playerRepository.delete(playerEntity.get());
     }

@@ -2,6 +2,7 @@ package hu.unideb.fupn26.service;
 
 import hu.unideb.fupn26.dao.PlayerDao;
 import hu.unideb.fupn26.exception.InvalidPlayerArgumentException;
+import hu.unideb.fupn26.exception.PlayerSqlIntegrityException;
 import hu.unideb.fupn26.exception.UnknownPlayerException;
 import hu.unideb.fupn26.model.Player;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class PlayerServiceImpl implements PlayerService{
     }
 
     @Override
-    public void deletePlayer(Player player) throws UnknownPlayerException {
+    public void deletePlayer(Player player) throws UnknownPlayerException, PlayerSqlIntegrityException {
         playerDao.deletePlayer(player);
     }
 
