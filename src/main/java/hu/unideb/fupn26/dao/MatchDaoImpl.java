@@ -126,8 +126,12 @@ public class MatchDaoImpl implements MatchDao {
                         entity.getTeam2().getName(),
                         MatchLocation.valueOf(entity.getTeam1Location().toUpperCase()),
                         MatchLocation.valueOf(entity.getTeam2Location().toUpperCase()),
-                        entity.getWinnerScore(),
-                        entity.getLoserScore(),
+                        entity.getWinnerTeam() == entity.getTeam1().getId() ?
+                            entity.getWinnerScore() :
+                            entity.getLoserScore(),
+                        entity.getWinnerTeam() == entity.getTeam2().getId() ?
+                                entity.getWinnerScore() :
+                                entity.getLoserScore(),
                         entity.getStartDate().toLocalDateTime(),
                         entity.getVenue(),
                         entity.getAttendants(),
