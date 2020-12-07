@@ -42,7 +42,7 @@ public class MatchServiceImpl implements MatchService{
     }
 
     @Override
-    public void deleteMatch(Match match) throws UnknownTeamException, UnknownMatchException {
+    public void deleteMatch(Match match) throws UnknownMatchException {
         matchDao.deleteMatch(match);
     }
 

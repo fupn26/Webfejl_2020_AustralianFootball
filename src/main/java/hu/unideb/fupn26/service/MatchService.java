@@ -13,5 +13,5 @@ public interface MatchService {
     Collection<Match> getAllMatchByTeam(String teamName);
 
     void recordMatch(Match match) throws UnknownTeamException, InvalidMatchArgumentException;
-    void deleteMatch(Match match) throws UnknownTeamException, UnknownMatchException;
+    void deleteMatch(Match match) throws UnknownMatchException;
 }
