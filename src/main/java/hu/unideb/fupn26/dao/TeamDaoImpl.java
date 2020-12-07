@@ -88,6 +88,11 @@ public class TeamDaoImpl implements TeamDao{
         if (!matchStatRepository.findByTeam(teamEntity.get()).isEmpty())
             throw new TeamSqlIntegrityException("Team can't be deleted because it is referenced in MatchStat table.");
 
-        teamRepository.delete(teamEntity.get());
+        try {
+            teamRepository.delete(teamEntity.get());
+        } catch (Exception e) {
+            log.error("Can't delete team: {}", e.getMessage());
+        }
+
     }
 }
