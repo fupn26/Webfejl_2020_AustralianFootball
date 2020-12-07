@@ -15,14 +15,14 @@ public class Player {
     private LocalDateTime birthOfDate;
     private String firstName;
     private String lastName;
-    private int height;
-    private int weight;
+    private Integer height;
+    private Integer weight;
 
     public Player(int id) {
         this.id = id;
     }
 
-    public Player(LocalDateTime birthOfDate, String firstName, String lastName, int height, int weight) {
+    public Player(LocalDateTime birthOfDate, String firstName, String lastName, Integer height, Integer weight) {
         this.birthOfDate = birthOfDate;
         this.firstName = firstName;
         this.lastName = lastName;
