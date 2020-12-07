@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -32,6 +31,10 @@ public class MatchDaoImpl implements MatchDao {
     public void createMatch(Match match) throws UnknownTeamException {
         MatchEntity matchEntity;
 
+        String winnerTeam = match.getTeam1Score() > match.getTeam2Score() ?
+                match.getTeam1() :
+                match.getTeam2();
+
         matchEntity = MatchEntity.builder()
                 .id(String.format("%d_%s_%d_%d", match.getSeason(), match.getRound(),
                         queryTeamByName(match.getTeam1()).getId(), queryTeamByName(match.getTeam2()).getId()))
@@ -45,20 +48,20 @@ public class MatchDaoImpl implements MatchDao {
                 .venue(match.getVenue())
                 .attendants(match.getAttendants())
                 .margin(match.getMargin())
-                .winnerScore(match.getWinnerScore())
-                .winnerTeam(queryTeamByName(match.getWinnerTeam()).getId())
-                .winnerLocation(match.getWinnerTeam().equals(match.getTeam1()) ?
+                .winnerScore(Integer.max(match.getTeam1Score(), match.getTeam2Score()))
+                .winnerTeam(queryTeamByName(winnerTeam).getId())
+                .winnerLocation(winnerTeam.equals(match.getTeam1()) ?
                         match.getTeam1Location().name().toLowerCase() :
                         match.getTeam2Location().name().toLowerCase()
                 )
-                .loserScore(match.getLoserScore())
-                .loserTeam(queryTeamByName(match.getWinnerTeam().equals(match.getTeam1()) ?
+                .loserScore(Integer.min(match.getTeam1Score(), match.getTeam2Score()))
+                .loserTeam(queryTeamByName(winnerTeam.equals(match.getTeam1()) ?
                             match.getTeam2() :
                             match.getTeam1()
                         )
                         .getId()
                 )
-                .loserLocation(match.getWinnerTeam().equals(match.getTeam1()) ?
+                .loserLocation(winnerTeam.equals(match.getTeam1()) ?
                         match.getTeam2Location().name().toLowerCase() :
                         match.getTeam1Location().name().toLowerCase()
                 )
@@ -67,10 +70,9 @@ public class MatchDaoImpl implements MatchDao {
                             match.getTeam2()
                         ).getId()
                 )
-                .homeScore(match.getWinnerTeam().equals(match.getTeam1()) &&
-                            match.getTeam1Location() == MatchLocation.H ?
-                        match.getWinnerScore() :
-                        match.getLoserScore()
+                .homeScore(match.getTeam1Location() == MatchLocation.H ?
+                        match.getTeam1Score() :
+                        match.getTeam2Score()
                 )
                 .homeQ1Goals(match.getHomeQ1Goals())
                 .homeQ2Goals(match.getHomeQ2Goals())
@@ -87,10 +89,9 @@ public class MatchDaoImpl implements MatchDao {
                             match.getTeam2()
                         ).getId()
                 )
-                .awayScore(match.getWinnerTeam().equals(match.getTeam1()) &&
-                        match.getTeam1Location() == MatchLocation.A ?
-                        match.getWinnerScore() :
-                        match.getLoserScore()
+                .awayScore(match.getTeam1Location() == MatchLocation.A ?
+                        match.getTeam1Score() :
+                        match.getTeam2Score()
                 )
                 .awayQ1Goals(match.getAwayQ1Goals())
                 .awayQ2Goals(match.getAwayQ2Goals())
@@ -102,7 +103,7 @@ public class MatchDaoImpl implements MatchDao {
                 .awayQ3Behinds(match.getAwayQ3Behinds())
                 .awayQ4Behinds(match.getAwayQ4Behinds())
                 .awayExtraTimeBehinds(match.getAwayExtraTimeBehinds())
-                .target(match.getTeam1().equals(match.getWinnerTeam()) ? 1 : 0)
+                .target(match.getTeam1().equals(winnerTeam) ? 1 : 0)
                 .build();
 
         log.info("MatchEntity: {}", matchEntity);
@@ -125,7 +126,6 @@ public class MatchDaoImpl implements MatchDao {
                         entity.getTeam2().getName(),
                         MatchLocation.valueOf(entity.getTeam1Location().toUpperCase()),
                         MatchLocation.valueOf(entity.getTeam2Location().toUpperCase()),
-                        queryTeamNameById(entity.getWinnerTeam()),
                         entity.getWinnerScore(),
                         entity.getLoserScore(),
                         entity.getStartDate().toLocalDateTime(),
@@ -160,7 +160,7 @@ public class MatchDaoImpl implements MatchDao {
     @Override
     public void deleteMatch(Match match) throws UnknownMatchException {
 
-        if (!matchRepository.findById(match.getId()).isPresent()) {
+        if (matchRepository.findById(match.getId()).isEmpty()) {
             throw new UnknownMatchException(String.format("Match not found: %s", match), match);
         }
         matchRepository.deleteById(match.getId());
