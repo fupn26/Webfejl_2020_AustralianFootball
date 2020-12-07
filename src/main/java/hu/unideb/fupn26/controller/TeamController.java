@@ -3,6 +3,7 @@ package hu.unideb.fupn26.controller;
 import hu.unideb.fupn26.controller.dto.TeamDto;
 import hu.unideb.fupn26.exception.InvalidTeamNameException;
 import hu.unideb.fupn26.exception.TeamAlreadyExistsException;
+import hu.unideb.fupn26.exception.TeamSqlIntegrityException;
 import hu.unideb.fupn26.exception.UnknownTeamException;
 import hu.unideb.fupn26.model.Team;
 import hu.unideb.fupn26.service.TeamService;
@@ -52,7 +53,7 @@ public class TeamController {
     public void deleteById(@RequestParam("Team id") int id) {
         try {
             teamService.deleteTeam(new Team(id));
-        } catch (UnknownTeamException e) {
+        } catch (UnknownTeamException | TeamSqlIntegrityException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -61,7 +62,7 @@ public class TeamController {
     public void deleteByName(@RequestParam("Team name") String teamName) {
         try {
             teamService.deleteTeam(new Team(teamName.trim()));
-        } catch (UnknownTeamException e) {
+        } catch (UnknownTeamException | TeamSqlIntegrityException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

@@ -3,6 +3,7 @@ package hu.unideb.fupn26.service;
 import hu.unideb.fupn26.dao.TeamDao;
 import hu.unideb.fupn26.exception.InvalidTeamNameException;
 import hu.unideb.fupn26.exception.TeamAlreadyExistsException;
+import hu.unideb.fupn26.exception.TeamSqlIntegrityException;
 import hu.unideb.fupn26.exception.UnknownTeamException;
 import hu.unideb.fupn26.model.Team;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public void deleteTeam(Team team) throws UnknownTeamException {
+    public void deleteTeam(Team team) throws UnknownTeamException, TeamSqlIntegrityException {
         teamDao.deleteTeam(team);
     }
 }

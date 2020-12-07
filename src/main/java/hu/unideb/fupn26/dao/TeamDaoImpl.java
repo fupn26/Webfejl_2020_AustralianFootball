@@ -1,9 +1,12 @@
 package hu.unideb.fupn26.dao;
 
 import hu.unideb.fupn26.dao.entity.TeamEntity;
+import hu.unideb.fupn26.dao.repository.MatchRepository;
+import hu.unideb.fupn26.dao.repository.MatchStatRepository;
 import hu.unideb.fupn26.dao.repository.TeamRepository;
 import hu.unideb.fupn26.exception.InvalidTeamNameException;
 import hu.unideb.fupn26.exception.TeamAlreadyExistsException;
+import hu.unideb.fupn26.exception.TeamSqlIntegrityException;
 import hu.unideb.fupn26.exception.UnknownTeamException;
 import hu.unideb.fupn26.model.Team;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,8 @@ import java.util.stream.StreamSupport;
 public class TeamDaoImpl implements TeamDao{
 
     private final TeamRepository teamRepository;
+    private final MatchRepository matchRepository;
+    private final MatchStatRepository matchStatRepository;
 
     @Override
     public void createTeam(Team team) throws TeamAlreadyExistsException {
@@ -66,7 +71,7 @@ public class TeamDaoImpl implements TeamDao{
     }
 
     @Override
-    public void deleteTeam(Team team) throws UnknownTeamException {
+    public void deleteTeam(Team team) throws UnknownTeamException, TeamSqlIntegrityException {
         Optional<TeamEntity> teamEntity;
 
         if (team.getId() != null)
@@ -76,6 +81,12 @@ public class TeamDaoImpl implements TeamDao{
 
         if (teamEntity.isEmpty())
             throw new UnknownTeamException(String.format("Team not found: %s", team));
+
+        if (!matchRepository.findByTeam1OrTeam2(teamEntity.get(), teamEntity.get()).isEmpty())
+            throw new TeamSqlIntegrityException("Team can't be deleted because it is referenced in Match table.");
+
+        if (!matchStatRepository.findByTeam(teamEntity.get()).isEmpty())
+            throw new TeamSqlIntegrityException("Team can't be deleted because it is referenced in MatchStat table.");
 
         teamRepository.delete(teamEntity.get());
     }
