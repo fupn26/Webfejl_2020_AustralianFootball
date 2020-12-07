@@ -5,20 +5,31 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
+@RequiredArgsConstructor
 @ToString
 @Getter
 @EqualsAndHashCode
 public class Match {
 
     private String id;
+
+    @NonNull
     private Integer season;
+    @NonNull
     private MatchRound round;
+    @NonNull
     private String team1;
+    @NonNull
     private String team2;
+    @NonNull
     private MatchLocation team1Location;
+    @NonNull
     private MatchLocation team2Location;
+    @NonNull
     private Integer team1Score;
+    @NonNull
     private Integer team2Score;
+
     private LocalDateTime startDate;
     private String venue;
     private Integer attendants;
@@ -43,24 +54,6 @@ public class Match {
     private Integer awayQ3Behinds;
     private Integer awayQ4Behinds;
     private Integer awayExtraTimeBehinds;
-
-    public Match(int season,
-                 MatchRound round,
-                 String team1,
-                 String team2,
-                 MatchLocation team1Location,
-                 MatchLocation team2Location,
-                 int team1Score,
-                 int team2Score) {
-        this.season = season;
-        this.round = round;
-        this.team1 = team1;
-        this.team2 = team2;
-        this.team1Location = team1Location;
-        this.team2Location = team2Location;
-        this.team1Score = team1Score;
-        this.team2Score = team2Score;
-    }
 
     public Match(String id) {
         this.id = id;
