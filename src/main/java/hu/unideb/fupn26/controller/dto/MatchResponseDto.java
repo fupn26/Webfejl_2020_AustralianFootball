@@ -14,5 +14,5 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class MatchResponseDto extends MatchFullRequestDto {
 
-    private Integer id;
+    private String id;
 }
