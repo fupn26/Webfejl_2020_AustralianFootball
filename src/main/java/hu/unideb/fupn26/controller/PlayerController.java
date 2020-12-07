@@ -3,7 +3,6 @@ package hu.unideb.fupn26.controller;
 import hu.unideb.fupn26.controller.dto.PlayerDto;
 import hu.unideb.fupn26.controller.dto.PlayerCreateRequestDto;
 import hu.unideb.fupn26.exception.InvalidPlayerArgumentException;
-import hu.unideb.fupn26.exception.PlayerAlreadyExistsException;
 import hu.unideb.fupn26.exception.PlayerSqlIntegrityException;
 import hu.unideb.fupn26.exception.UnknownPlayerException;
 import hu.unideb.fupn26.model.Player;
@@ -14,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
