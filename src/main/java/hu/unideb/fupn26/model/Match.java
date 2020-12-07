@@ -5,7 +5,6 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Builder
 @ToString
 @Getter
@@ -14,21 +13,13 @@ public class Match {
 
     private String id;
 
-    @NonNull
     private Integer season;
-    @NonNull
     private MatchRound round;
-    @NonNull
     private String team1;
-    @NonNull
     private String team2;
-    @NonNull
     private MatchLocation team1Location;
-    @NonNull
     private MatchLocation team2Location;
-    @NonNull
     private Integer team1Score;
-    @NonNull
     private Integer team2Score;
 
     private LocalDateTime startDate;

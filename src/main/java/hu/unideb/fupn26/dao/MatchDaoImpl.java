@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -69,8 +70,7 @@ public class MatchDaoImpl implements MatchDao {
                 .loserTeam(queryTeamByName(winnerTeam.equals(match.getTeam1()) ?
                             match.getTeam2() :
                             match.getTeam1()
-                        )
-                        .getId()
+                        ).getId()
                 )
                 .loserLocation(winnerTeam.equals(match.getTeam1()) ?
                         match.getTeam2Location().name().toLowerCase() :
@@ -122,6 +122,91 @@ public class MatchDaoImpl implements MatchDao {
             matchRepository.save(matchEntity);
         } catch (Exception e) {
             log.error(e.getMessage());
+        }
+
+    }
+
+    @Override
+    public void updateMatch(Match match) throws UnknownMatchException {
+        Optional<MatchEntity> matchEntity = matchRepository.findById(match.getId());
+        if (matchEntity.isEmpty())
+            throw new UnknownMatchException(String.format("Match not found: %s", match));
+
+        MatchEntity newMatchEntity = matchEntity.get();
+
+        TeamEntity winnerTeam = match.getTeam1Score() > match.getTeam2Score() ?
+                newMatchEntity.getTeam1() :
+                newMatchEntity.getTeam2();
+
+        newMatchEntity.setTeam1Location(match.getTeam1Location().name().toLowerCase());
+        newMatchEntity.setTeam2Location(match.getTeam2Location().name().toLowerCase());
+        newMatchEntity.setStartDate(match.getStartDate() != null ?
+                Timestamp.valueOf(match.getStartDate()) :
+                null
+        );
+        newMatchEntity.setVenue(match.getVenue());
+        newMatchEntity.setAttendants(match.getAttendants());
+        newMatchEntity.setMargin(match.getMargin());
+        newMatchEntity.setWinnerScore(Integer.max(match.getTeam1Score(), match.getTeam2Score()));
+        newMatchEntity.setWinnerTeam(winnerTeam.getId());
+        newMatchEntity.setWinnerLocation((winnerTeam.equals(newMatchEntity.getTeam1()) ?
+                match.getTeam1Location().name().toLowerCase() :
+                match.getTeam2Location().name().toLowerCase()
+        ));
+        newMatchEntity.setLoserScore(Integer.min(match.getTeam1Score(), match.getTeam2Score()));
+        newMatchEntity.setLoserTeam((winnerTeam.equals(newMatchEntity.getTeam1()) ?
+                newMatchEntity.getTeam2() :
+                newMatchEntity.getTeam1()
+                ).getId()
+        );
+        newMatchEntity.setLoserLocation(winnerTeam.equals(newMatchEntity.getTeam1()) ?
+                match.getTeam2Location().name().toLowerCase() :
+                match.getTeam1Location().name().toLowerCase()
+        );
+        newMatchEntity.setHomeTeam((match.getTeam1Location() == MatchLocation.H ?
+                        newMatchEntity.getTeam1() :
+                        newMatchEntity.getTeam2()
+                ).getId()
+        );
+        newMatchEntity.setHomeScore(match.getTeam1Location() == MatchLocation.H ?
+                match.getTeam1Score() :
+                match.getTeam2Score()
+        );
+        newMatchEntity.setHomeQ1Goals(match.getHomeQ1Goals());
+        newMatchEntity.setHomeQ2Goals(match.getHomeQ2Goals());
+        newMatchEntity.setHomeQ3Goals(match.getHomeQ3Goals());
+        newMatchEntity.setHomeQ4Goals(match.getHomeQ4Goals());
+        newMatchEntity.setHomeExtraTimeGoals(match.getHomeExtraTimeGoals());
+        newMatchEntity.setHomeQ1Behinds(match.getHomeQ1Behinds());
+        newMatchEntity.setHomeQ2Behinds(match.getHomeQ2Behinds());
+        newMatchEntity.setHomeQ3Behinds(match.getHomeQ3Behinds());
+        newMatchEntity.setHomeQ4Behinds(match.getHomeQ4Behinds());
+        newMatchEntity.setHomeExtraTimeBehinds(match.getHomeExtraTimeBehinds());
+        newMatchEntity.setAwayTeam((match.getTeam1Location() == MatchLocation.A ?
+                newMatchEntity.getTeam1() :
+                newMatchEntity.getTeam2()
+            ).getId()
+        );
+        newMatchEntity.setAwayScore(match.getTeam1Location() == MatchLocation.A ?
+                    match.getTeam1Score() :
+                    match.getTeam2Score()
+        );
+        newMatchEntity.setAwayQ1Goals(match.getAwayQ1Goals());
+        newMatchEntity.setAwayQ2Goals(match.getAwayQ2Goals());
+        newMatchEntity.setAwayQ3Goals(match.getAwayQ3Goals());
+        newMatchEntity.setAwayQ4Goals(match.getAwayQ4Goals());
+        newMatchEntity.setAwayExtraTimeGoals(match.getAwayExtraTimeGoals());
+        newMatchEntity.setAwayQ1Behinds(match.getAwayQ1Behinds());
+        newMatchEntity.setAwayQ2Behinds(match.getAwayQ2Behinds());
+        newMatchEntity.setAwayQ3Behinds(match.getAwayQ3Behinds());
+        newMatchEntity.setAwayQ4Behinds(match.getAwayQ4Behinds());
+        newMatchEntity.setAwayExtraTimeBehinds(match.getAwayExtraTimeBehinds());
+
+        log.info("MatchEntity: {}", newMatchEntity);
+        try {
+            matchRepository.save(newMatchEntity);
+        } catch (Exception e) {
+            log.error("Can't update match: {}", e.getMessage());
         }
 
     }

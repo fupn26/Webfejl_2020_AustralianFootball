@@ -3,6 +3,7 @@ package hu.unideb.fupn26.controller;
 import hu.unideb.fupn26.controller.dto.MatchMinimalRequestDto;
 import hu.unideb.fupn26.controller.dto.MatchResponseDto;
 import hu.unideb.fupn26.controller.dto.MatchFullRequestDto;
+import hu.unideb.fupn26.controller.dto.MatchUpdateRequestDto;
 import hu.unideb.fupn26.exception.*;
 import hu.unideb.fupn26.model.Match;
 import hu.unideb.fupn26.service.MatchService;
@@ -29,16 +30,17 @@ public class MatchController {
     @PostMapping("/match/create/minimal")
     public void recordMinimal(@RequestBody MatchMinimalRequestDto requestDto) {
         try {
-            matchService.recordMatch(new Match(
-                    requestDto.getSeason(),
-                    requestDto.getRound(),
-                    requestDto.getTeam1(),
-                    requestDto.getTeam2(),
-                    requestDto.getTeam1Location(),
-                    requestDto.getTeam2Location(),
-                    requestDto.getTeam1Score(),
-                    requestDto.getTeam2Score()
-            ));
+            matchService.recordMatch(Match.builder()
+                    .season(requestDto.getSeason())
+                    .round(requestDto.getRound())
+                    .team1(requestDto.getTeam1())
+                    .team2(requestDto.getTeam2())
+                    .team1Location(requestDto.getTeam1Location())
+                    .team2Location(requestDto.getTeam2Location())
+                    .team1Score(requestDto.getTeam1Score())
+                    .team2Score(requestDto.getTeam2Score())
+                    .build()
+            );
         } catch (UnknownTeamException | InvalidMatchArgumentException | NullPointerException | MatchAlreadyExistsException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -69,6 +71,50 @@ public class MatchController {
                 .stream()
                 .map(this::convertModelToDto)
                 .collect(Collectors.toList());
+    }
+
+    @PostMapping("/match/update")
+    public void update(@RequestBody MatchUpdateRequestDto requestDto) {
+        try {
+            matchService.updateMatch(Match.builder()
+                    .id(requestDto.getId())
+                    .team1Location(requestDto.getTeam1Location())
+                    .team2Location(requestDto.getTeam2Location())
+                    .team1Score(requestDto.getTeam1Score())
+                    .team2Score(requestDto.getTeam2Score())
+                    .startDate(requestDto.getStartDate() != null ?
+                            LocalDateTime.parse(requestDto.getStartDate(), formatter) :
+                            null
+                    )
+                    .venue(requestDto.getVenue())
+                    .attendants(requestDto.getAttendants())
+                    .margin(requestDto.getMargin())
+                    .homeQ1Goals(requestDto.getHomeQ1Goals())
+                    .homeQ2Goals(requestDto.getHomeQ2Goals())
+                    .homeQ3Goals(requestDto.getHomeQ3Goals())
+                    .homeQ4Goals(requestDto.getHomeQ4Goals())
+                    .homeExtraTimeGoals(requestDto.getHomeExtraTimeGoals())
+                    .homeQ1Behinds(requestDto.getHomeQ1Behinds())
+                    .homeQ2Behinds(requestDto.getHomeQ2Behinds())
+                    .homeQ3Behinds(requestDto.getHomeQ3Behinds())
+                    .homeQ4Behinds(requestDto.getHomeQ4Behinds())
+                    .homeExtraTimeBehinds(requestDto.getHomeExtraTimeBehinds())
+                    .awayQ1Goals(requestDto.getAwayQ1Goals())
+                    .awayQ2Goals(requestDto.getAwayQ2Goals())
+                    .awayQ3Goals(requestDto.getAwayQ3Goals())
+                    .awayQ4Goals(requestDto.getAwayQ4Goals())
+                    .awayExtraTimeGoals(requestDto.getAwayExtraTimeGoals())
+                    .awayQ1Behinds(requestDto.getAwayQ1Behinds())
+                    .awayQ2Behinds(requestDto.getAwayQ2Behinds())
+                    .awayQ3Behinds(requestDto.getAwayQ3Behinds())
+                    .awayQ4Behinds(requestDto.getAwayQ4Behinds())
+                    .awayExtraTimeBehinds(requestDto.getAwayExtraTimeBehinds())
+                    .build());
+        } catch (DateTimeParseException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Date format! Please use the following pattern: yyyy-MM-dd HH:mm:ss");
+        } catch (InvalidMatchArgumentException | UnknownMatchException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
     @DeleteMapping("/match/delete")

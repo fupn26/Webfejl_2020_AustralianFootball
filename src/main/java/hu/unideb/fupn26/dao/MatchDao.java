@@ -12,6 +12,7 @@ import java.util.Collection;
 public interface MatchDao {
 
     void createMatch(Match match) throws UnknownTeamException, MatchAlreadyExistsException;
+    void updateMatch(Match match) throws UnknownMatchException;
     Collection<Match> readAll();
     void deleteMatch(Match match) throws UnknownMatchException, MatchSqlIntegrityException;
 }

@@ -36,7 +36,28 @@ public class MatchServiceImpl implements MatchService{
     public void recordMatch(Match match) throws UnknownTeamException, InvalidMatchArgumentException, MatchAlreadyExistsException {
         validateMatch(match);
 
+        if (match.getSeason() == null || match.getRound() == null ||
+                match.getTeam1() == null || match.getTeam2() == null ||
+                match.getTeam1Location() == null || match.getTeam2Location() == null ||
+                match.getTeam1Score() == null || match.getTeam2Score() == null
+        )
+                throw new InvalidMatchArgumentException("Field's value is null. Season, round, team1, team2, " +
+                        "team1Location, team2Location, team1Score, team2Score fields can't be null");
+
         matchDao.createMatch(match);
+    }
+
+    @Override
+    public void updateMatch(Match match) throws InvalidMatchArgumentException, UnknownMatchException {
+        validateMatch(match);
+
+        if (match.getTeam1Location() == null || match.getTeam2Location() == null ||
+                match.getTeam1Score() == null || match.getTeam2Score() == null
+        )
+            throw new InvalidMatchArgumentException("Field's value is null. " +
+                    "Team1Location, team2Location, team1Score, team2Score fields can't be null");
+
+            matchDao.updateMatch(match);
     }
 
     @Override
@@ -45,8 +66,8 @@ public class MatchServiceImpl implements MatchService{
     }
 
     private void validateMatch(Match match) throws InvalidMatchArgumentException {
-        if (match.getTeam1Score() < 0 ||
-                match.getTeam2Score() < 0 ||
+        if ((match.getTeam1Score() != null && match.getTeam1Score() < 0) ||
+                (match.getTeam2Score() != null && match.getTeam2Score() < 0) ||
                 (match.getAttendants() != null && match.getAttendants() < 0) ||
                 (match.getMargin() != null && match.getMargin() < 0) ||
                 (match.getHomeQ1Goals() != null && match.getHomeQ1Goals() < 0) ||
@@ -72,19 +93,27 @@ public class MatchServiceImpl implements MatchService{
         )
             throw  new InvalidMatchArgumentException("Negative numerical value");
 
-        if (match.getSeason() < 1858) {
+        if (match.getVenue() != null && match.getVenue().isBlank())
+            throw new InvalidMatchArgumentException("Venue is empty");
+
+        if (match.getSeason() != null && match.getSeason() < 1858) {
             throw new InvalidMatchArgumentException("Season is lesser than 1858");
         }
 
-        if (Objects.equals(match.getTeam1Score(), match.getTeam2Score())) {
+        if (match.getTeam1Score() != null && match.getTeam2Score() != null &&
+                match.getTeam1Score() == match.getTeam2Score()
+        ) {
             throw new InvalidMatchArgumentException("Equal team scores");
         }
 
-        if (match.getTeam1Location().equals(match.getTeam2Location())) {
+        if (match.getTeam1Location() != null && match.getTeam2Location() != null &&
+                match.getTeam1Location().equals(match.getTeam2Location())
+        ) {
             throw new InvalidMatchArgumentException("Equal team locations");
         }
 
-        if (match.getTeam1().equals(match.getTeam2())) {
+        if (match.getTeam1() != null && match.getTeam2() != null &&
+                match.getTeam1().equals(match.getTeam2())) {
             throw new InvalidMatchArgumentException("Equal team names");
         }
     }
