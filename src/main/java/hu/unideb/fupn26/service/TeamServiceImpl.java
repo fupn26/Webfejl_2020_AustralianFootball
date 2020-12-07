@@ -26,7 +26,10 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public void recordTeam(Team team) throws TeamAlreadyExistsException, InvalidTeamNameException {
-        if (team.getTeamName().isEmpty() || team.getTeamName().trim().isEmpty())
+        if (team.getTeamName() == null)
+            throw new InvalidTeamNameException("Team name is null");
+
+        if (team.getTeamName().isBlank())
             throw new InvalidTeamNameException("Team name is empty");
 
         teamDao.createTeam(team);
@@ -34,7 +37,10 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public void updateTeam(Team team) throws UnknownTeamException, InvalidTeamNameException {
-        if (team.getTeamName().isEmpty() || team.getTeamName().trim().isEmpty())
+        if (team.getTeamName() == null)
+            throw new InvalidTeamNameException("Team name is null");
+
+        if (team.getTeamName().isBlank())
             throw new InvalidTeamNameException("Team name is empty");
 
         teamDao.updateTeam(team);
