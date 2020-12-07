@@ -5,6 +5,7 @@ import hu.unideb.fupn26.dao.entity.TeamEntity;
 import hu.unideb.fupn26.dao.repository.MatchRepository;
 import hu.unideb.fupn26.dao.repository.MatchStatRepository;
 import hu.unideb.fupn26.dao.repository.TeamRepository;
+import hu.unideb.fupn26.exception.MatchAlreadyExistsException;
 import hu.unideb.fupn26.exception.MatchSqlIntegrityException;
 import hu.unideb.fupn26.exception.UnknownMatchException;
 import hu.unideb.fupn26.exception.UnknownTeamException;
@@ -32,16 +33,22 @@ public class MatchDaoImpl implements MatchDao {
     private final MatchStatRepository matchStatRepository;
 
     @Override
-    public void createMatch(Match match) throws UnknownTeamException {
+    public void createMatch(Match match) throws UnknownTeamException, MatchAlreadyExistsException {
         MatchEntity matchEntity;
 
         String winnerTeam = match.getTeam1Score() > match.getTeam2Score() ?
                 match.getTeam1() :
                 match.getTeam2();
 
+        String id = String.format("%d_%s_%d_%d", match.getSeason(), match.getRound(),
+                queryTeamByName(match.getTeam1()).getId(), queryTeamByName(match.getTeam2()).getId());
+
+        if (matchRepository.findById(id).isPresent()) {
+            throw new MatchAlreadyExistsException(String.format("Team already exists: %s", match));
+        }
+
         matchEntity = MatchEntity.builder()
-                .id(String.format("%d_%s_%d_%d", match.getSeason(), match.getRound(),
-                        queryTeamByName(match.getTeam1()).getId(), queryTeamByName(match.getTeam2()).getId()))
+                .id(id)
                 .season(match.getSeason())
                 .round(match.getRound().name())
                 .team1(queryTeamByName(match.getTeam1()))

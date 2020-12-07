@@ -3,13 +3,12 @@ package hu.unideb.fupn26.controller;
 import hu.unideb.fupn26.controller.dto.MatchMinimalRequestDto;
 import hu.unideb.fupn26.controller.dto.MatchResponseDto;
 import hu.unideb.fupn26.controller.dto.MatchFullRequestDto;
-import hu.unideb.fupn26.exception.InvalidMatchArgumentException;
-import hu.unideb.fupn26.exception.UnknownMatchException;
-import hu.unideb.fupn26.exception.UnknownTeamException;
+import hu.unideb.fupn26.exception.*;
 import hu.unideb.fupn26.model.Match;
 import hu.unideb.fupn26.service.MatchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.geolatte.geom.M;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -41,7 +40,7 @@ public class MatchController {
                     requestDto.getTeam1Score(),
                     requestDto.getTeam2Score()
             ));
-        } catch (UnknownTeamException | InvalidMatchArgumentException e) {
+        } catch (UnknownTeamException | InvalidMatchArgumentException | NullPointerException | MatchAlreadyExistsException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -50,7 +49,7 @@ public class MatchController {
     public void recordFull(@RequestBody MatchFullRequestDto requestDto) {
         try {
             matchService.recordMatch(convertDtoToModel(requestDto));
-        } catch (UnknownTeamException | InvalidMatchArgumentException e) {
+        } catch (UnknownTeamException | InvalidMatchArgumentException | NullPointerException | MatchAlreadyExistsException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (DateTimeParseException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Date format! Please use the following pattern: yyyy-MM-dd HH:mm:ss");
@@ -61,7 +60,7 @@ public class MatchController {
     public Collection<MatchResponseDto> listMatches() {
         return matchService.getAllMatch()
                 .stream()
-                .map(model -> convertModelToDto(model))
+                .map(this::convertModelToDto)
                 .collect(Collectors.toList());
     }
 
@@ -69,15 +68,15 @@ public class MatchController {
     public Collection<MatchResponseDto> listMatchesByTeam(@RequestParam String teamName) {
         return matchService.getAllMatchByTeam(teamName)
                 .stream()
-                .map(model -> convertModelToDto(model))
+                .map(this::convertModelToDto)
                 .collect(Collectors.toList());
     }
 
     @DeleteMapping("/match/delete")
-    public void delete(@RequestBody MatchFullRequestDto requestDto) {
+    public void delete(@RequestParam(name="Match ID") String matchID) {
         try {
-            matchService.deleteMatch(convertDtoToModel(requestDto));
-        } catch (UnknownMatchException e) {
+            matchService.deleteMatch(new Match(matchID));
+        } catch (UnknownMatchException | MatchSqlIntegrityException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -130,7 +129,7 @@ public class MatchController {
                 .team2Location(match.getTeam2Location())
                 .team1Score(match.getTeam1Score())
                 .team2Score(match.getTeam2Score())
-                .startDate(match.getStartDate().format(formatter))
+                .startDate(match.getStartDate() != null ? match.getStartDate().format(formatter) : null)
                 .venue(match.getVenue())
                 .attendants(match.getAttendants())
                 .margin(match.getMargin())

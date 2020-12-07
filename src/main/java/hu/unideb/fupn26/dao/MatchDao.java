@@ -1,5 +1,6 @@
 package hu.unideb.fupn26.dao;
 
+import hu.unideb.fupn26.exception.MatchAlreadyExistsException;
 import hu.unideb.fupn26.exception.MatchSqlIntegrityException;
 import hu.unideb.fupn26.exception.UnknownMatchException;
 import hu.unideb.fupn26.exception.UnknownTeamException;
@@ -10,7 +11,7 @@ import java.util.Collection;
 
 public interface MatchDao {
 
-    void createMatch(Match match) throws UnknownTeamException;
+    void createMatch(Match match) throws UnknownTeamException, MatchAlreadyExistsException;
     Collection<Match> readAll();
     void deleteMatch(Match match) throws UnknownMatchException, MatchSqlIntegrityException;
 }

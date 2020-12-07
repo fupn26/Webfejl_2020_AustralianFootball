@@ -1,10 +1,7 @@
 package hu.unideb.fupn26.service;
 
 import hu.unideb.fupn26.dao.MatchDao;
-import hu.unideb.fupn26.exception.InvalidMatchArgumentException;
-import hu.unideb.fupn26.exception.MatchSqlIntegrityException;
-import hu.unideb.fupn26.exception.UnknownMatchException;
-import hu.unideb.fupn26.exception.UnknownTeamException;
+import hu.unideb.fupn26.exception.*;
 import hu.unideb.fupn26.model.Match;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +33,7 @@ public class MatchServiceImpl implements MatchService{
     }
 
     @Override
-    public void recordMatch(Match match) throws UnknownTeamException, InvalidMatchArgumentException {
+    public void recordMatch(Match match) throws UnknownTeamException, InvalidMatchArgumentException, MatchAlreadyExistsException {
         validateMatch(match);
 
         matchDao.createMatch(match);
