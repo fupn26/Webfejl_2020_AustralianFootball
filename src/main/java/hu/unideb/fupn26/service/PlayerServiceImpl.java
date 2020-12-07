@@ -34,6 +34,9 @@ public class PlayerServiceImpl implements PlayerService{
     public void updatePlayer(Player player) throws InvalidPlayerArgumentException, UnknownPlayerException {
         validatePlayer(player);
 
+        if (player.getId() == null)
+            throw new InvalidPlayerArgumentException("Id is null");
+
         playerDao.updatePlayer(player);
     }
 
@@ -43,13 +46,17 @@ public class PlayerServiceImpl implements PlayerService{
     }
 
     private void validatePlayer(Player player) throws InvalidPlayerArgumentException {
+        if (player.getWeight() == null || player.getHeight() == null ||
+                player.getBirthOfDate() == null || player.getFirstName() == null ||
+                player.getLastName() == null)
+            throw new InvalidPlayerArgumentException("Field's value is null");
         if (player.getWeight() < 0)
             throw new InvalidPlayerArgumentException("The weight value is negative");
         if (player.getHeight() < 0)
             throw new InvalidPlayerArgumentException("The height value is negative.");
-        if (player.getLastName().trim().isEmpty())
+        if (player.getLastName().isBlank())
             throw new InvalidPlayerArgumentException("The last name is empty.");
-        if (player.getFirstName().trim().isEmpty())
+        if (player.getFirstName().isBlank())
             throw new InvalidPlayerArgumentException("The first name is empty.");
     }
 }
