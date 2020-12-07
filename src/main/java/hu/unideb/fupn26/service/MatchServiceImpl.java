@@ -2,6 +2,7 @@ package hu.unideb.fupn26.service;
 
 import hu.unideb.fupn26.dao.MatchDao;
 import hu.unideb.fupn26.exception.InvalidMatchArgumentException;
+import hu.unideb.fupn26.exception.MatchSqlIntegrityException;
 import hu.unideb.fupn26.exception.UnknownMatchException;
 import hu.unideb.fupn26.exception.UnknownTeamException;
 import hu.unideb.fupn26.model.Match;
@@ -42,7 +43,7 @@ public class MatchServiceImpl implements MatchService{
     }
 
     @Override
-    public void deleteMatch(Match match) throws UnknownMatchException {
+    public void deleteMatch(Match match) throws UnknownMatchException, MatchSqlIntegrityException {
         matchDao.deleteMatch(match);
     }
 
@@ -80,6 +81,14 @@ public class MatchServiceImpl implements MatchService{
 
         if (Objects.equals(match.getTeam1Score(), match.getTeam2Score())) {
             throw new InvalidMatchArgumentException("Equal team scores");
+        }
+
+        if (match.getTeam1Location().equals(match.getTeam2Location())) {
+            throw new InvalidMatchArgumentException("Equal team locations");
+        }
+
+        if (match.getTeam1().equals(match.getTeam2())) {
+            throw new InvalidMatchArgumentException("Equal team names");
         }
     }
 }
