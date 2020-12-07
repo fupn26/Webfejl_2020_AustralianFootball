@@ -2,6 +2,7 @@ package hu.unideb.fupn26.dao.repository;
 
 import hu.unideb.fupn26.dao.entity.MatchStatEntity;
 import hu.unideb.fupn26.dao.entity.MatchStatId;
+import hu.unideb.fupn26.dao.entity.PlayerEntity;
 import hu.unideb.fupn26.dao.entity.TeamEntity;
 import org.springframework.data.repository.CrudRepository;
 
@@ -11,4 +12,5 @@ public interface MatchStatRepository extends CrudRepository<MatchStatEntity, Mat
 
     Collection<MatchStatEntity> findById_Match_Id(String id);
     Collection<MatchStatEntity> findByTeam(TeamEntity entity);
+    Collection<MatchStatEntity> findById_Player_Id(int id);
 }
