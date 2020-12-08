@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -87,5 +88,10 @@ public class MatchStatServiceImpl implements MatchStatService{
                 (matchStat.getPercentageOfGamePlayed() != null && matchStat.getPercentageOfGamePlayed() < 0)
         )
             throw new InvalidMatchStatArgumentException("Numerical value is negative");
+
+        if (matchStat.getTeamId() != null &&
+                !Arrays.asList(matchStat.getMatchId().split("_")).contains(matchStat.getTeamId()))
+            throw new InvalidMatchStatArgumentException("The given team isn't participant of the given match");
+
     }
 }
