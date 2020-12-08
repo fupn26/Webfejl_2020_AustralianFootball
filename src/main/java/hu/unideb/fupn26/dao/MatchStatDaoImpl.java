@@ -31,7 +31,7 @@ public class MatchStatDaoImpl implements MatchStatDao{
         PlayerEntity playerEntity = queryPlayerById(matchStat.getPlayerId());
         TeamEntity teamEntity = queryTeamById(matchStat.getTeamId());
 
-        if (matchStatRepository.findById(new MatchStatId(matchEntity, playerEntity)).isEmpty())
+        if (matchStatRepository.findById(new MatchStatId(matchEntity, playerEntity)).isPresent())
             throw new MatchStatAlreadyExists(String.format("Match stat already exists: %s", matchStat));
 
         MatchStatEntity matchStatEntity = MatchStatEntity.builder()
@@ -81,12 +81,12 @@ public class MatchStatDaoImpl implements MatchStatDao{
                         entity.getId().getMatch().getId(),
                         entity.getId().getPlayer().getId(),
                         entity.getTeam().getId(),
+                        entity.getGoals(),
+                        entity.getBehinds(),
                         entity.getKicks(),
                         entity.getMarks(),
                         entity.getHandballs(),
                         entity.getDisposals(),
-                        entity.getGoals(),
-                        entity.getBehinds(),
                         entity.getHitOuts(),
                         entity.getTackles(),
                         entity.getRebound50s(),
@@ -185,7 +185,7 @@ public class MatchStatDaoImpl implements MatchStatDao{
     private MatchStatEntity queryMatchStatById(MatchStatId id) throws UnknownMatchStatException {
         Optional<MatchStatEntity> matchStatEntity = matchStatRepository.findById(id);
         if (matchStatEntity.isEmpty())
-            throw new UnknownMatchStatException(String.format("Match stat not found with the given ID: %d", id));
+            throw new UnknownMatchStatException(String.format("Match stat not found with the given ID: %s", id));
 
         return matchStatEntity.get();
     }

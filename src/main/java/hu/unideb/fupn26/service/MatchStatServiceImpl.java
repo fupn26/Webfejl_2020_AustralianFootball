@@ -41,15 +41,14 @@ public class MatchStatServiceImpl implements MatchStatService{
     public void recordMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException, UnknownTeamException, InvalidMatchStatArgumentException, MatchStatAlreadyExists {
         validateMatchStat(matchStat);
 
-        if (matchStat.getMatchId() == null)
-            throw new InvalidMatchStatArgumentException("Match ID is null");
-        if (matchStat.getPlayerId() == null)
-            throw new InvalidMatchStatArgumentException("Player ID is null");
-        if (matchStat.getTeamId() == null || matchStat.getGoals() == null || matchStat.getBehinds() == null)
-            throw new InvalidMatchStatArgumentException("Field's value is null. " +
-                    "TeamId, goals and behinds can't be null!");
-
         matchStatDao.createMatchStat(matchStat);
+    }
+
+    @Override
+    public void updateMatchStat(MatchStat matchStat) throws InvalidMatchStatArgumentException, UnknownPlayerException, UnknownTeamException, UnknownMatchException, UnknownMatchStatException {
+        validateMatchStat(matchStat);
+
+        matchStatDao.updateMatchStat(matchStat);
     }
 
     @Override
@@ -63,6 +62,17 @@ public class MatchStatServiceImpl implements MatchStatService{
     }
 
     private void validateMatchStat(MatchStat matchStat) throws InvalidMatchStatArgumentException {
+        if (matchStat.getMatchId() == null)
+            throw new InvalidMatchStatArgumentException("Match ID is null");
+        if (matchStat.getPlayerId() == null)
+            throw new InvalidMatchStatArgumentException("Player ID is null");
+        if (matchStat.getTeamId() == null || matchStat.getGoals() == null || matchStat.getBehinds() == null)
+            throw new InvalidMatchStatArgumentException("Field's value is null. " +
+                    "TeamId, goals and behinds can't be null!");
+
+        if (!Arrays.asList(matchStat.getMatchId().split("_")).contains(matchStat.getTeamId().toString()))
+            throw new InvalidMatchStatArgumentException("The given team isn't participant of the given match");
+
         if ((matchStat.getKicks() != null && matchStat.getKicks() < 0) ||
                 (matchStat.getMarks() != null && matchStat.getMarks() < 0) ||
                 (matchStat.getHandballs() != null && matchStat.getHandballs() < 0) ||
@@ -88,10 +98,6 @@ public class MatchStatServiceImpl implements MatchStatService{
                 (matchStat.getPercentageOfGamePlayed() != null && matchStat.getPercentageOfGamePlayed() < 0)
         )
             throw new InvalidMatchStatArgumentException("Numerical value is negative");
-
-        if (matchStat.getTeamId() != null &&
-                !Arrays.asList(matchStat.getMatchId().split("_")).contains(matchStat.getTeamId()))
-            throw new InvalidMatchStatArgumentException("The given team isn't participant of the given match");
 
     }
 }

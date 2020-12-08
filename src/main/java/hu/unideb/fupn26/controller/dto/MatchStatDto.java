@@ -1,13 +1,15 @@
 package hu.unideb.fupn26.controller.dto;
 
-public class MatchStatDto {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-    private String matchId;
-    private Integer playerId;
-    private Integer teamId;
-    private Integer goals;
-    private Integer behinds;
-
+@Data
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+public class MatchStatDto extends MatchStatMinimalDto{
 
     private Integer kicks;
     private Integer marks;

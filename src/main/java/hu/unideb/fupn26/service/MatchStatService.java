@@ -11,5 +11,6 @@ public interface MatchStatService {
     Collection<MatchStat> getAllMatchStatByTeam(Integer teamId);
 
     void recordMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException, UnknownTeamException, InvalidMatchStatArgumentException, MatchStatAlreadyExists;
+    void updateMatchStat(MatchStat matchStat) throws InvalidMatchStatArgumentException, UnknownPlayerException, UnknownTeamException, UnknownMatchException, UnknownMatchStatException;
     void deleteMatchStat(MatchStat matchStat) throws UnknownPlayerException, UnknownMatchException, InvalidMatchStatArgumentException;
 }
