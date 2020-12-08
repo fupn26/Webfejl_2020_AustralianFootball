@@ -5,9 +5,7 @@ import hu.unideb.fupn26.dao.repository.MatchRepository;
 import hu.unideb.fupn26.dao.repository.MatchStatRepository;
 import hu.unideb.fupn26.dao.repository.PlayerRepository;
 import hu.unideb.fupn26.dao.repository.TeamRepository;
-import hu.unideb.fupn26.exception.UnknownMatchException;
-import hu.unideb.fupn26.exception.UnknownPlayerException;
-import hu.unideb.fupn26.exception.UnknownTeamException;
+import hu.unideb.fupn26.exception.*;
 import hu.unideb.fupn26.model.MatchStat;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,18 +26,21 @@ public class MatchStatDaoImpl implements MatchStatDao{
     private final PlayerRepository playerRepository;
 
     @Override
-    public void createMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException, UnknownTeamException {
-        MatchStatEntity matchStatEntity;
-        MatchEntity matchEntity = queryMatchByMatchStat(matchStat);
-        PlayerEntity playerEntity = queryPlayerByName(matchStat.getPlayerFirstName()
-                ,matchStat.getPlayerLastName());
-        TeamEntity playerTeamEntity = queryTeamByName(matchStat.getPlayerTeam());
-        MatchStatId matchStatId = new MatchStatId(matchEntity, playerEntity);
+    public void createMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException, UnknownTeamException, MatchStatAlreadyExists {
+        MatchEntity matchEntity = queryMatchById(matchStat.getMatchId());
+        PlayerEntity playerEntity = queryPlayerById(matchStat.getPlayerId());
+        TeamEntity teamEntity = queryTeamById(matchStat.getTeamId());
 
-        matchStatEntity = MatchStatEntity.builder()
-                .id(matchStatId)
-                .team(playerTeamEntity)
-                .location(matchStat.getPlayerTeamLocation())
+        if (matchStatRepository.findById(new MatchStatId(matchEntity, playerEntity)).isEmpty())
+            throw new MatchStatAlreadyExists(String.format("Match stat already exists: %s", matchStat));
+
+        MatchStatEntity matchStatEntity = MatchStatEntity.builder()
+                .id(new MatchStatId(matchEntity, playerEntity))
+                .team(teamEntity)
+                .location(matchEntity.getTeam1().getId() == matchStat.getTeamId() ?
+                        matchEntity.getTeam1Location() :
+                        matchEntity.getTeam2Location()
+                )
                 .kicks(matchStat.getKicks())
                 .marks(matchStat.getMarks())
                 .handballs(matchStat.getHandballs())
@@ -65,101 +66,21 @@ public class MatchStatDaoImpl implements MatchStatDao{
                 .percentageOfGamePlayed(matchStat.getPercentageOfGamePlayed())
                 .build();
 
+        log.info("MatchStatEntity: {}", matchStatEntity);
         try {
             matchStatRepository.save(matchStatEntity);
         } catch (Exception e) {
             log.error("Can't save new match stat: {}", e.getMessage());
-            e.printStackTrace();
         }
-    }
-
-    private PlayerEntity queryPlayerByName(String firstName, String lastname) throws UnknownPlayerException {
-        Optional<PlayerEntity> playerEntity = playerRepository.findByFirstNameAndLastName(firstName, lastname).stream()
-                .findFirst();
-
-        if (playerEntity.isEmpty()) {
-            log.error("Player not found: {} {}", firstName, lastname);
-            throw new UnknownPlayerException(String.format("Player not found: %s %s", firstName, lastname));
-        }
-
-        log.trace("Player Entity: {}", playerEntity);
-        return playerEntity.get();
-    }
-
-    private MatchEntity queryMatchByMatchStat(MatchStat matchStat) throws UnknownMatchException {
-        int playerTeamId;
-        int opponentTeamId;
-        String playerTeamVsOpponentTeamMatchId;
-        String opponentTeamVsPlayerTeamMatchId;
-
-        try {
-            playerTeamId = queryTeamByName(matchStat.getPlayerTeam()).getId();
-            opponentTeamId = queryTeamByName(matchStat.getOpponentTeam()).getId();
-        } catch (UnknownTeamException e) {
-            log.error("Team not found!");
-            throw new UnknownMatchException(String.format("Match not found: %s", e.getMessage()));
-        }
-
-        playerTeamVsOpponentTeamMatchId = String.format("%d_%s_%d_%d"
-                ,matchStat.getSeason()
-                ,matchStat.getRound()
-                ,playerTeamId
-                ,opponentTeamId
-        );
-
-        opponentTeamVsPlayerTeamMatchId = String.format("%d_%s_%d_%d"
-                ,matchStat.getSeason()
-                ,matchStat.getRound()
-                ,opponentTeamId
-                ,playerTeamId
-        );
-
-        Optional<MatchEntity> matchEntity = StreamSupport.stream (matchRepository
-                .findAllById(Arrays.asList(playerTeamVsOpponentTeamMatchId, opponentTeamVsPlayerTeamMatchId))
-                .spliterator(), false)
-                .filter(entity -> {
-                    if (entity.getTeam1().getId() == playerTeamId
-                            && entity.getTeam1Location().equals(matchStat.getPlayerTeamLocation()))
-                        return true;
-                    else if (entity.getTeam2().getId() == playerTeamId
-                            && entity.getTeam2Location().equals(matchStat.getPlayerTeamLocation()))
-                        return true;
-                    else
-                        return false;
-                })
-                .findFirst();
-
-        if (matchEntity.isEmpty()) {
-            log.error("Match not found");
-            throw new UnknownMatchException("Match not found");
-        }
-
-        log.trace("Match Entity: {}", matchEntity);
-        return matchEntity.get();
-    }
-
-    private TeamEntity queryTeamByName(String team) throws UnknownTeamException {
-        Optional<TeamEntity> teamEntity = teamRepository.findByName(team);
-
-        if (teamEntity.isEmpty()) {
-            throw new UnknownTeamException(String.format("Team not found: %s", team));
-        }
-
-        log.trace("Team Entity: {}", teamEntity);
-        return teamEntity.get();
     }
 
     @Override
     public Collection<MatchStat> readAll() {
         return StreamSupport.stream(matchStatRepository.findAll().spliterator(), false)
                 .map(entity -> new MatchStat(
-                        entity.getId().getPlayer().getFirstName(),
-                        entity.getId().getPlayer().getLastName(),
-                        entity.getTeam().getName(),
-                        queryOpponentTeamName(entity),
-                        entity.getId().getMatch().getSeason(),
-                        entity.getId().getMatch().getRound(),
-                        entity.getLocation(),
+                        entity.getId().getMatch().getId(),
+                        entity.getId().getPlayer().getId(),
+                        entity.getTeam().getId(),
                         entity.getKicks(),
                         entity.getMarks(),
                         entity.getHandballs(),
@@ -188,21 +109,92 @@ public class MatchStatDaoImpl implements MatchStatDao{
                 .collect(Collectors.toList());
     }
 
-    private String queryOpponentTeamName(MatchStatEntity entity) {
-        String playerTeamName = entity.getTeam().getName();
-        String team1Name = entity.getId().getMatch().getTeam1().getName();
-        String team2Name = entity.getId().getMatch().getTeam2().getName();
+    @Override
+    public void updateMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException, UnknownTeamException, UnknownMatchStatException {
+        MatchEntity matchEntity = queryMatchById(matchStat.getMatchId());
+        PlayerEntity playerEntity = queryPlayerById(matchStat.getPlayerId());
+        TeamEntity teamEntity = queryTeamById(matchStat.getTeamId());
 
-        return playerTeamName.equals(team1Name) ? team2Name : team1Name;
+        MatchStatEntity matchStatEntity = queryMatchStatById(new MatchStatId(matchEntity, playerEntity));
+
+        matchStatEntity.setTeam(teamEntity);
+        matchStatEntity.setLocation(matchEntity.getTeam1().getId() == matchStat.getTeamId() ?
+                        matchEntity.getTeam1Location() :
+                        matchEntity.getTeam2Location()
+                );
+        matchStatEntity.setKicks(matchStat.getKicks());
+        matchStatEntity.setMarks(matchStat.getMarks());
+        matchStatEntity.setHandballs(matchStat.getHandballs());
+        matchStatEntity.setDisposals(matchStat.getDisposals());
+        matchStatEntity.setGoals(matchStat.getGoals());
+        matchStatEntity.setBehinds(matchStat.getBehinds());
+        matchStatEntity.setHitOuts(matchStat.getHitOuts());
+        matchStatEntity.setTackles(matchStat.getTackles());
+        matchStatEntity.setRebound50s(matchStat.getRebound50s());
+        matchStatEntity.setInside50s(matchStat.getInside50s());
+        matchStatEntity.setClearances(matchStat.getClearances());
+        matchStatEntity.setClangers(matchStat.getClangers());
+        matchStatEntity.setFreeKicksFor(matchStat.getFreeKicksFor());
+        matchStatEntity.setFreeKicksAgainst(matchStat.getFreeKicksAgainst());
+        matchStatEntity.setBrownlowVotes(matchStat.getBrownlowVotes());
+        matchStatEntity.setContestedPossessions(matchStat.getContestedPossessions());
+        matchStatEntity.setUncontestedPossessions(matchStat.getUncontestedPossessions());
+        matchStatEntity.setContestedMarks(matchStat.getContestedMarks());
+        matchStatEntity.setMarksInside50(matchStat.getMarksInside50());
+        matchStatEntity.setOnePercenters(matchStat.getOnePercenters());
+        matchStatEntity.setBounces(matchStat.getBounces());
+        matchStatEntity.setGoalAssist(matchStat.getGoalAssist());
+        matchStatEntity.setPercentageOfGamePlayed(matchStat.getPercentageOfGamePlayed());
+
+        log.info("MatchStatEntity: {}", matchStatEntity);
+        try {
+            matchStatRepository.save(matchStatEntity);
+        } catch (Exception e) {
+            log.error("Can't update match stat: {}", matchStat);
+        }
     }
 
     @Override
     public void deleteMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException {
-        MatchEntity matchEntity = queryMatchByMatchStat(matchStat);
-        PlayerEntity playerEntity = queryPlayerByName(matchStat.getPlayerFirstName()
-                ,matchStat.getPlayerLastName());
-        MatchStatId matchStatId = new MatchStatId(matchEntity, playerEntity);
+        MatchEntity matchEntity = queryMatchById(matchStat.getMatchId());
+        PlayerEntity playerEntity = queryPlayerById(matchStat.getPlayerId());
 
-        matchStatRepository.deleteById(matchStatId);
+        try {
+            matchStatRepository.deleteById(new MatchStatId(matchEntity, playerEntity));
+        } catch (Exception e) {
+            log.error("Can't delete match stat: {}", matchStat);
+        }
+    }
+
+    private MatchEntity queryMatchById(String id) throws UnknownMatchException {
+        Optional<MatchEntity> matchEntity = matchRepository.findById(id);
+        if (matchEntity.isEmpty())
+            throw new UnknownMatchException(String.format("Match not found with the given ID: %s", id));
+
+        return matchEntity.get();
+    }
+
+    private PlayerEntity queryPlayerById(Integer id) throws UnknownPlayerException {
+        Optional<PlayerEntity> playerEntity = playerRepository.findById(id);
+        if (playerEntity.isEmpty())
+            throw new UnknownPlayerException(String.format("Player not found with the given ID: %d", id));
+
+        return playerEntity.get();
+    }
+
+    private MatchStatEntity queryMatchStatById(MatchStatId id) throws UnknownMatchStatException {
+        Optional<MatchStatEntity> matchStatEntity = matchStatRepository.findById(id);
+        if (matchStatEntity.isEmpty())
+            throw new UnknownMatchStatException(String.format("Match stat not found with the given ID: %d", id));
+
+        return matchStatEntity.get();
+    }
+
+    private TeamEntity queryTeamById(Integer id) throws UnknownTeamException {
+        Optional<TeamEntity> teamEntity = teamRepository.findById(id);
+        if (teamEntity.isEmpty())
+            throw new UnknownTeamException(String.format("Team not found with the given ID: %d", id));
+
+        return teamEntity.get();
     }
 }

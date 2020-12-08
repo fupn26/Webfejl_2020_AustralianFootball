@@ -45,7 +45,7 @@ public class MatchDaoImpl implements MatchDao {
                 queryTeamByName(match.getTeam1()).getId(), queryTeamByName(match.getTeam2()).getId());
 
         if (matchRepository.findById(id).isPresent()) {
-            throw new MatchAlreadyExistsException(String.format("Team already exists: %s", match));
+            throw new MatchAlreadyExistsException(String.format("Match already exists: %s", match));
         }
 
         matchEntity = MatchEntity.builder()

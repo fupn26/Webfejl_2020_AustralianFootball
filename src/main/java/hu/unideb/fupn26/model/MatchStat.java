@@ -3,32 +3,23 @@ package hu.unideb.fupn26.model;
 import lombok.*;
 
 @AllArgsConstructor
-@RequiredArgsConstructor
+@Builder
 @ToString
 @Getter
 @EqualsAndHashCode
 public class MatchStat {
 
-    @NonNull
-    private String playerFirstName;
-    @NonNull
-    private String playerLastName;
-    @NonNull
-    private String playerTeam;
-    @NonNull
-    private String opponentTeam;
-    @NonNull
-    private Integer season;
-    @NonNull
-    private String round;
-    @NonNull
-    private String playerTeamLocation;
+    private String matchId;
+    private Integer playerId;
+    private Integer teamId;
+    private Integer goals;
+    private Integer behinds;
+
+
     private Integer kicks;
     private Integer marks;
     private Integer handballs;
     private Integer disposals;
-    private Integer goals;
-    private Integer behinds;
     private Integer hitOuts;
     private Integer tackles;
     private Integer rebound50s;
@@ -46,4 +37,9 @@ public class MatchStat {
     private Integer bounces;
     private Integer goalAssist;
     private Float percentageOfGamePlayed;
+
+    public MatchStat(String matchId, Integer playerId) {
+        this.matchId = matchId;
+        this.playerId = playerId;
+    }
 }
