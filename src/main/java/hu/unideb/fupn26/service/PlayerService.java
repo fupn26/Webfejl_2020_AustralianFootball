@@ -14,5 +14,5 @@ public interface PlayerService {
 
     void recordPlayer(Player player) throws InvalidPlayerArgumentException;
     void updatePlayer(Player player) throws InvalidPlayerArgumentException, UnknownPlayerException;
-    void deletePlayer(Player player) throws UnknownPlayerException, PlayerSqlIntegrityException;
+    void deletePlayer(Player player) throws UnknownPlayerException, PlayerSqlIntegrityException, InvalidPlayerArgumentException;
 }

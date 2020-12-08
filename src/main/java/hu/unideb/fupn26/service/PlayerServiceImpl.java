@@ -41,7 +41,10 @@ public class PlayerServiceImpl implements PlayerService{
     }
 
     @Override
-    public void deletePlayer(Player player) throws UnknownPlayerException, PlayerSqlIntegrityException {
+    public void deletePlayer(Player player) throws UnknownPlayerException, PlayerSqlIntegrityException, InvalidPlayerArgumentException {
+        if (player.getId() == null)
+            throw new InvalidPlayerArgumentException("Id is null");
+
         playerDao.deletePlayer(player);
     }
 

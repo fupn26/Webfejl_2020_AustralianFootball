@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlayerCreateRequestDto {
+public class PlayerRequestDto {
 
     private String birthOfDate;
     private String firstName;

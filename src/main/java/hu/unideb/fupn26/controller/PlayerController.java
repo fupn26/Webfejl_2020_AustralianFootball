@@ -1,7 +1,7 @@
 package hu.unideb.fupn26.controller;
 
-import hu.unideb.fupn26.controller.dto.PlayerDto;
-import hu.unideb.fupn26.controller.dto.PlayerCreateRequestDto;
+import hu.unideb.fupn26.controller.dto.PlayerRequestDto;
+import hu.unideb.fupn26.controller.dto.PlayerResponseDto;
 import hu.unideb.fupn26.exception.InvalidPlayerArgumentException;
 import hu.unideb.fupn26.exception.PlayerSqlIntegrityException;
 import hu.unideb.fupn26.exception.UnknownPlayerException;
@@ -28,7 +28,7 @@ public class PlayerController {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @PostMapping("/player/create")
-    public void record(@RequestBody PlayerCreateRequestDto requestDto) {
+    public void record(@RequestBody PlayerRequestDto requestDto) {
         try {
             LocalDateTime birthDate = LocalDateTime.parse(requestDto.getBirthOfDate(), formatter);
             playerService.recordPlayer(new Player(
@@ -46,10 +46,10 @@ public class PlayerController {
     }
 
     @GetMapping("/player/get/all")
-    public Collection<PlayerDto> listPlayers(){
+    public Collection<PlayerRequestDto> listPlayers(){
         return playerService.getAllPlayer()
                 .stream()
-                .map(model -> PlayerDto.builder()
+                .map(model -> PlayerResponseDto.builder()
                         .id(model.getId())
                         .birthOfDate(model.getBirthOfDate().format(formatter))
                         .firstName(model.getFirstName())
@@ -61,11 +61,11 @@ public class PlayerController {
     }
 
     @PostMapping("/player/update")
-    public void update(@RequestBody PlayerDto playerDto) {
+    public void update(@RequestParam(name= "playerId") int playerId, @RequestBody PlayerRequestDto playerDto) {
         try {
             LocalDateTime birthDate = LocalDateTime.parse(playerDto.getBirthOfDate(), formatter);
             playerService.updatePlayer(new Player(
-                    playerDto.getId(),
+                    playerId,
                     birthDate,
                     playerDto.getFirstName(),
                     playerDto.getLastName(),
@@ -80,10 +80,10 @@ public class PlayerController {
     }
 
     @DeleteMapping("/player/delete")
-    public void delete(@RequestParam("Player id") int id) {
+    public void delete(@RequestParam("playerId") int playerId) {
         try {
-            playerService.deletePlayer(new Player(id));
-        } catch (UnknownPlayerException | PlayerSqlIntegrityException e) {
+            playerService.deletePlayer(new Player(playerId));
+        } catch (UnknownPlayerException | PlayerSqlIntegrityException | InvalidPlayerArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

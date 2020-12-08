@@ -5,13 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
-
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlayerDto extends PlayerCreateRequestDto {
+public class PlayerResponseDto extends PlayerRequestDto{
 
     private Integer id;
 }
