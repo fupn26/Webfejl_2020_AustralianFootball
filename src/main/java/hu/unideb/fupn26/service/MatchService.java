@@ -12,5 +12,5 @@ public interface MatchService {
 
     void recordMatch(Match match) throws UnknownTeamException, InvalidMatchArgumentException, MatchAlreadyExistsException;
     void updateMatch(Match match) throws InvalidMatchArgumentException, UnknownMatchException;
-    void deleteMatch(Match match) throws UnknownMatchException, MatchSqlIntegrityException;
+    void deleteMatch(Match match) throws UnknownMatchException, MatchSqlIntegrityException, InvalidMatchArgumentException;
 }

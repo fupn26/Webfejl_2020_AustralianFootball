@@ -12,7 +12,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class MatchUpdateRequestDto {
 
-    private String id;
     private MatchLocation team1Location;
     private MatchLocation team2Location;
     private Integer team1Score;

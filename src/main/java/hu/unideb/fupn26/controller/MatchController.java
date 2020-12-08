@@ -74,10 +74,10 @@ public class MatchController {
     }
 
     @PostMapping("/match/update")
-    public void update(@RequestBody MatchUpdateRequestDto requestDto) {
+    public void update(@RequestParam(name="Match ID") String matchId, @RequestBody MatchUpdateRequestDto requestDto) {
         try {
             matchService.updateMatch(Match.builder()
-                    .id(requestDto.getId())
+                    .id(matchId)
                     .team1Location(requestDto.getTeam1Location())
                     .team2Location(requestDto.getTeam2Location())
                     .team1Score(requestDto.getTeam1Score())
@@ -121,7 +121,7 @@ public class MatchController {
     public void delete(@RequestParam(name="Match ID") String matchID) {
         try {
             matchService.deleteMatch(new Match(matchID));
-        } catch (UnknownMatchException | MatchSqlIntegrityException e) {
+        } catch (UnknownMatchException | MatchSqlIntegrityException | InvalidMatchArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

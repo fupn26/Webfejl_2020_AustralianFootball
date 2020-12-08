@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,8 +40,8 @@ public class MatchServiceImpl implements MatchService{
                 match.getTeam1Location() == null || match.getTeam2Location() == null ||
                 match.getTeam1Score() == null || match.getTeam2Score() == null
         )
-                throw new InvalidMatchArgumentException("Field's value is null. Season, round, team1, team2, " +
-                        "team1Location, team2Location, team1Score, team2Score fields can't be null");
+            throw new InvalidMatchArgumentException("Field's value is null. Season, round, team1, team2, " +
+                    "team1Location, team2Location, team1Score, team2Score fields can't be null!");
 
         matchDao.createMatch(match);
     }
@@ -51,17 +50,23 @@ public class MatchServiceImpl implements MatchService{
     public void updateMatch(Match match) throws InvalidMatchArgumentException, UnknownMatchException {
         validateMatch(match);
 
+        if (match.getId() == null)
+            throw new InvalidMatchArgumentException("Id is null");
+
         if (match.getTeam1Location() == null || match.getTeam2Location() == null ||
                 match.getTeam1Score() == null || match.getTeam2Score() == null
         )
             throw new InvalidMatchArgumentException("Field's value is null. " +
-                    "Team1Location, team2Location, team1Score, team2Score fields can't be null");
+                    "Team1Location, team2Location, team1Score, team2Score fields can't be null!");
 
-            matchDao.updateMatch(match);
+        matchDao.updateMatch(match);
     }
 
     @Override
-    public void deleteMatch(Match match) throws UnknownMatchException, MatchSqlIntegrityException {
+    public void deleteMatch(Match match) throws UnknownMatchException, MatchSqlIntegrityException, InvalidMatchArgumentException {
+        if (match.getId() == null)
+            throw new InvalidMatchArgumentException("Id is null");
+
         matchDao.deleteMatch(match);
     }
 
