@@ -105,8 +105,11 @@ public class MatchServiceImpl implements MatchService{
             throw new InvalidMatchArgumentException("Season is lesser than 1858");
         }
 
+        if (match.getStartDate() != null && match.getStartDate().getYear() != match.getSeason())
+            throw new InvalidMatchArgumentException("Start date's year value is not equal with season value");
+
         if (match.getTeam1Score() != null && match.getTeam2Score() != null &&
-                match.getTeam1Score() == match.getTeam2Score()
+                match.getTeam1Score().equals(match.getTeam2Score())
         ) {
             throw new InvalidMatchArgumentException("Equal team scores");
         }
