@@ -17,7 +17,7 @@ public class MatchEntity {
     @Column(name = "mid")
     private String id;
 
-    private int season;
+    private Integer season;
 
     private String round;
 

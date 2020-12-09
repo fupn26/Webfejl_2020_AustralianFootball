@@ -17,7 +17,7 @@ public class PlayerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "pid")
-    private int id;
+    private Integer id;
 
     @Column(name = "dob")
     private LocalDateTime birthDate;

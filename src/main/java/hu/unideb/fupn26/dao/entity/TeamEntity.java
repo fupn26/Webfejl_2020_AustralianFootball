@@ -17,7 +17,7 @@ public class TeamEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "tid")
-    private int id;
+    private Integer id;
 
     @Column(name = "tname")
     private String name;
