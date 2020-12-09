@@ -12,5 +12,5 @@ public interface MatchStatRepository extends CrudRepository<MatchStatEntity, Mat
 
     Collection<MatchStatEntity> findById_Match_Id(String id);
     Collection<MatchStatEntity> findByTeam(TeamEntity entity);
-    Collection<MatchStatEntity> findById_Player_Id(int id);
+    Collection<MatchStatEntity> findById_Player_Id(Integer id);
 }
