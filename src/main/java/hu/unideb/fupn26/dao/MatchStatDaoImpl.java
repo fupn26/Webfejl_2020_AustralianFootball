@@ -166,7 +166,7 @@ public class MatchStatDaoImpl implements MatchStatDao{
         }
     }
 
-    private MatchEntity queryMatchById(String id) throws UnknownMatchException {
+    protected MatchEntity queryMatchById(String id) throws UnknownMatchException {
         Optional<MatchEntity> matchEntity = matchRepository.findById(id);
         if (matchEntity.isEmpty())
             throw new UnknownMatchException(String.format("Match not found with the given ID: %s", id));
@@ -174,7 +174,7 @@ public class MatchStatDaoImpl implements MatchStatDao{
         return matchEntity.get();
     }
 
-    private PlayerEntity queryPlayerById(Integer id) throws UnknownPlayerException {
+    protected PlayerEntity queryPlayerById(Integer id) throws UnknownPlayerException {
         Optional<PlayerEntity> playerEntity = playerRepository.findById(id);
         if (playerEntity.isEmpty())
             throw new UnknownPlayerException(String.format("Player not found with the given ID: %d", id));
@@ -182,7 +182,7 @@ public class MatchStatDaoImpl implements MatchStatDao{
         return playerEntity.get();
     }
 
-    private MatchStatEntity queryMatchStatById(MatchStatId id) throws UnknownMatchStatException {
+    protected MatchStatEntity queryMatchStatById(MatchStatId id) throws UnknownMatchStatException {
         Optional<MatchStatEntity> matchStatEntity = matchStatRepository.findById(id);
         if (matchStatEntity.isEmpty())
             throw new UnknownMatchStatException(String.format("Match stat not found with the given ID: %s", id));
