@@ -70,7 +70,7 @@ public class MatchServiceImpl implements MatchService{
         matchDao.deleteMatch(match);
     }
 
-    private void validateMatch(Match match) throws InvalidMatchArgumentException {
+    protected void validateMatch(Match match) throws InvalidMatchArgumentException {
         if ((match.getTeam1Score() != null && match.getTeam1Score() < 0) ||
                 (match.getTeam2Score() != null && match.getTeam2Score() < 0) ||
                 (match.getAttendants() != null && match.getAttendants() < 0) ||
