@@ -61,7 +61,7 @@ public class MatchStatServiceImpl implements MatchStatService{
         matchStatDao.deleteMatchStat(matchStat);
     }
 
-    private void validateMatchStat(MatchStat matchStat) throws InvalidMatchStatArgumentException {
+    protected void validateMatchStat(MatchStat matchStat) throws InvalidMatchStatArgumentException {
         if (matchStat.getMatchId() == null)
             throw new InvalidMatchStatArgumentException("Match ID is null");
         if (matchStat.getPlayerId() == null)
