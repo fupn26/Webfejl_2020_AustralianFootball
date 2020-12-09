@@ -275,18 +275,7 @@ public class MatchDaoImpl implements MatchDao {
         }
     }
 
-    private String queryTeamNameById(int teamId) {
-        Optional<TeamEntity> teamEntity = teamRepository.findById(teamId);
-
-        if (!teamEntity.isPresent()) {
-            log.warn("Team not found by id {}", teamId);
-            return "Unknown";
-        }
-
-        return teamEntity.get().getName();
-    }
-
-    private TeamEntity queryTeamByName(String team) throws UnknownTeamException {
+    protected TeamEntity queryTeamByName(String team) throws UnknownTeamException {
         Optional<TeamEntity> teamEntity = teamRepository.findByName(team);
 
         if (teamEntity.isEmpty())
