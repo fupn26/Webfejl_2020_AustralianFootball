@@ -10,5 +10,4 @@ import java.util.Optional;
 public interface PlayerRepository extends CrudRepository<PlayerEntity, Integer> {
 
     Collection<PlayerEntity> findByFirstNameAndLastName(String firstName, String lastName);
-    Optional<PlayerEntity> findByBirthDateAndFirstNameAndLastNameAndHeightAndWeight(Timestamp birthDate, String firstName, String lastName, int height, int weight);
 }
