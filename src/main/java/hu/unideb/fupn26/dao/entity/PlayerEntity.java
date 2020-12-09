@@ -3,7 +3,7 @@ package hu.unideb.fupn26.dao.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -20,7 +20,7 @@ public class PlayerEntity {
     private int id;
 
     @Column(name = "dob")
-    private Timestamp birthDate;
+    private LocalDateTime birthDate;
 
     @Column(name = "first_name")
     private String firstName;

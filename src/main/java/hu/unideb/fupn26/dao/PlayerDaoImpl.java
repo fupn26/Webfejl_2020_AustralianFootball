@@ -29,7 +29,7 @@ public class PlayerDaoImpl implements PlayerDao{
     public void createPlayer(Player player) {
 
         PlayerEntity playerEntity = PlayerEntity.builder()
-                .birthDate(Timestamp.valueOf(player.getBirthOfDate()))
+                .birthDate(player.getBirthOfDate())
                 .firstName(player.getFirstName())
                 .lastName(player.getLastName())
                 .height(player.getHeight())
@@ -53,7 +53,7 @@ public class PlayerDaoImpl implements PlayerDao{
             throw new UnknownPlayerException(String.format("Player not found: %s", player));
 
         PlayerEntity newPlayerEntity = playerEntity.get();
-        newPlayerEntity.setBirthDate(Timestamp.valueOf(player.getBirthOfDate()));
+        newPlayerEntity.setBirthDate(player.getBirthOfDate());
         newPlayerEntity.setFirstName(player.getFirstName());
         newPlayerEntity.setLastName(player.getLastName());
         newPlayerEntity.setHeight(player.getHeight());
@@ -72,7 +72,7 @@ public class PlayerDaoImpl implements PlayerDao{
         return StreamSupport.stream(playerRepository.findAll().spliterator(), false)
                 .map(entity -> new Player(
                         entity.getId(),
-                        entity.getBirthDate().toLocalDateTime(),
+                        entity.getBirthDate(),
                         entity.getFirstName(),
                         entity.getLastName(),
                         entity.getHeight(),
