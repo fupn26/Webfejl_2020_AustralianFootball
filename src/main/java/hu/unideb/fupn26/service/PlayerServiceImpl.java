@@ -32,10 +32,10 @@ public class PlayerServiceImpl implements PlayerService{
 
     @Override
     public void updatePlayer(Player player) throws InvalidPlayerArgumentException, UnknownPlayerException {
-        validatePlayer(player);
-
         if (player.getId() == null)
             throw new InvalidPlayerArgumentException("Id is null");
+
+        validatePlayer(player);
 
         playerDao.updatePlayer(player);
     }
@@ -48,7 +48,7 @@ public class PlayerServiceImpl implements PlayerService{
         playerDao.deletePlayer(player);
     }
 
-    private void validatePlayer(Player player) throws InvalidPlayerArgumentException {
+    protected void validatePlayer(Player player) throws InvalidPlayerArgumentException {
         if (player.getWeight() == null || player.getHeight() == null ||
                 player.getBirthOfDate() == null || player.getFirstName() == null ||
                 player.getLastName() == null)
