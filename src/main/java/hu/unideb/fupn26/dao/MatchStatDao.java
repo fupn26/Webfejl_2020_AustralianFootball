@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public interface MatchStatDao {
 
-    void createMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException, UnknownTeamException, MatchStatAlreadyExists;
+    void createMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException, UnknownTeamException, MatchStatAlreadyExistsException;
     Collection<MatchStat> readAll();
     void updateMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException, UnknownTeamException, UnknownMatchStatException;
     void deleteMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException;

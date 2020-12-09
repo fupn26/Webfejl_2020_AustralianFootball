@@ -2,13 +2,11 @@ package hu.unideb.fupn26.controller;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import hu.unideb.fupn26.controller.dto.MatchStatDto;
 import hu.unideb.fupn26.controller.dto.MatchStatMinimalDto;
 import hu.unideb.fupn26.controller.dto.MatchStatUpdateRequestDto;
 import hu.unideb.fupn26.exception.*;
-import hu.unideb.fupn26.model.Match;
 import hu.unideb.fupn26.model.MatchStat;
 import hu.unideb.fupn26.service.MatchStatService;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +34,7 @@ public class MatchStatController {
                     .build()
             );
         } catch (UnknownMatchException | UnknownPlayerException | InvalidMatchStatArgumentException |
-                MatchStatAlreadyExists | UnknownTeamException e) {
+                MatchStatAlreadyExistsException | UnknownTeamException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -72,7 +70,7 @@ public class MatchStatController {
                     matchStatDto.getGoalAssist(),
                     matchStatDto.getPercentageOfGamePlayed()
             ));
-        } catch (InvalidMatchStatArgumentException | UnknownMatchException | MatchStatAlreadyExists |
+        } catch (InvalidMatchStatArgumentException | UnknownMatchException | MatchStatAlreadyExistsException |
                 UnknownPlayerException | UnknownTeamException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }

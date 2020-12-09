@@ -26,18 +26,18 @@ public class MatchStatDaoImpl implements MatchStatDao{
     private final PlayerRepository playerRepository;
 
     @Override
-    public void createMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException, UnknownTeamException, MatchStatAlreadyExists {
+    public void createMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException, UnknownTeamException, MatchStatAlreadyExistsException {
         MatchEntity matchEntity = queryMatchById(matchStat.getMatchId());
         PlayerEntity playerEntity = queryPlayerById(matchStat.getPlayerId());
         TeamEntity teamEntity = queryTeamById(matchStat.getTeamId());
 
         if (matchStatRepository.findById(new MatchStatId(matchEntity, playerEntity)).isPresent())
-            throw new MatchStatAlreadyExists(String.format("Match stat already exists: %s", matchStat));
+            throw new MatchStatAlreadyExistsException(String.format("Match stat already exists: %s", matchStat));
 
         MatchStatEntity matchStatEntity = MatchStatEntity.builder()
                 .id(new MatchStatId(matchEntity, playerEntity))
                 .team(teamEntity)
-                .location(matchEntity.getTeam1().getId() == matchStat.getTeamId() ?
+                .location(matchEntity.getTeam1().getId().equals(matchStat.getTeamId()) ?
                         matchEntity.getTeam1Location() :
                         matchEntity.getTeam2Location()
                 )

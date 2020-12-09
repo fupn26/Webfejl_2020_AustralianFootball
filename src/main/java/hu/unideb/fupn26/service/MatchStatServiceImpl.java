@@ -38,7 +38,7 @@ public class MatchStatServiceImpl implements MatchStatService{
     }
 
     @Override
-    public void recordMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException, UnknownTeamException, InvalidMatchStatArgumentException, MatchStatAlreadyExists {
+    public void recordMatchStat(MatchStat matchStat) throws UnknownMatchException, UnknownPlayerException, UnknownTeamException, InvalidMatchStatArgumentException, MatchStatAlreadyExistsException {
         validateMatchStat(matchStat);
 
         matchStatDao.createMatchStat(matchStat);
